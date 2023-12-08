@@ -1,0 +1,79 @@
+{
+  "name": "account-abstraction-demo-ui",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.19",
+    "@mui/material": "^5.14.19",
+    "@safe-global/account-abstraction-kit-poc": "2.0.0",
+    "@safe-global/auth-kit": "2.0.0",
+    "@safe-global/onramp-kit": "2.0.0",
+    "@safe-global/protocol-kit": "2.0.0",
+    "@safe-global/relay-kit": "2.0.0",
+    "@safe-global/safe-react-components": "^2.0.6",
+    "@stripe/crypto": "^0.0.4",
+    "@stripe/stripe-js": "^1.52.1",
+    "@web3auth/safeauth-embed": "^0.0.0",
+    "axios": "^1.6.2",
+    "ethers": "^6.9.0",
+    "react": "^18.2.0",
+    "react-code-blocks": "^0.1.5",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1"
+  },
+  "resolutions": {
+    "@ethereumjs/tx": "4.0.2"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^18.18.11",
+    "@types/react": "^18.2.39",
+    "@types/react-dom": "^18.2.17",
+    "assert": "^2.0.0",
+    "browserify-zlib": "^0.2.0 ",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "eslint-config-react-app": "^7.0.1",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "prettier": "^2.8.8",
+    "process": "^0.11.10",
+    "react-app-rewired": "^2.2.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "typescript": "^4.9.5",
+    "url": "^0.11.3"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "format:check": "prettier --check \"*/**/*.{js,jsx,json,md,ts,tsx}\"",
+    "format": "prettier --write \"*/**/*.{js,jsx,json,md,ts,tsx}\""
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      "chrome >= 67",
+      "edge >= 79",
+      "firefox >= 68",
+      "opera >= 54",
+      "safari >= 14"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
