@@ -10,6 +10,7 @@ import NavMenu from './components/nav-menu/NavMenu'
 import { useAccountAbstraction } from './store/accountAbstractionContext'
 import TradeComponent from './TradeComponents/TradeComponent'
 import { Grid } from '@mui/material'
+import Portfolio from './pages/PortfolioComponents/Portfolio'
 
 function App() {
   const { setChainId } = useAccountAbstraction()
@@ -43,7 +44,9 @@ function App() {
             </Grid>
             <Grid item md={6}>
               <main style={{ flexGrow: 1 }}>
-                <ActiveStepComponent setStep={setStep} />
+                {activeStep === 0 && <TradeComponent />}
+                {activeStep === 1 && <Portfolio />}
+                {activeStep === 2 && <Portfolio />}
               </main>
             </Grid>
           </Grid>
@@ -64,7 +67,7 @@ const steps = [
   },
   {
     // Onramp Kit step
-    component: OnRampKitDemo,
+    component: Portfolio,
     nextLabel: 'to Relay Kit'
   },
   {
