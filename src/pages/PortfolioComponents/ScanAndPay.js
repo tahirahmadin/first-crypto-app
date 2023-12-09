@@ -234,7 +234,7 @@ export default function ScanAndPay() {
         balanceRecieved += parseInt(message.amount)
       }
 
-      let finalBalance = balanceTransfers - balanceRecieved
+      let finalBalance = 2000 + balanceRecieved - balanceTransfers
       console.log('finalBalance:' + finalBalance)
       setbalance(finalBalance)
     })

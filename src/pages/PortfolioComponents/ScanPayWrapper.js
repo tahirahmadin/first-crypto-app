@@ -3,7 +3,7 @@ import ScanAndPay from './ScanAndPay'
 
 export default function ScanPayWrapper() {
   return (
-    <ContentPairProvider contentTopic={'/upi/' + 121}>
+    <ContentPairProvider contentTopic={'/upi/' + 222}>
       <ScanAndPay />
     </ContentPairProvider>
   )
