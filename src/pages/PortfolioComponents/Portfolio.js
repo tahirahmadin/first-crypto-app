@@ -1,17 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 
-import { Box, IconButton, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Button, IconButton, Input, Typography, useMediaQuery, useTheme } from '@mui/material'
 
-import {
-  Cancel,
-  CopyAll,
-  CurrencyBitcoin,
-  LensBlur,
-  LocationCity,
-  MyLocation,
-  Twitter
-} from '@mui/icons-material'
+import { CopyAll } from '@mui/icons-material'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -60,7 +52,9 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '100%',
     minHeight: 100,
-
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     boxShadow: '0px 12px 24px rgba(0, 0, 0, 0.03)',
     borderRadius: '1rem'
   },
@@ -105,13 +99,22 @@ const useStyles = makeStyles((theme) => ({
     padding: 4,
     paddingLeft: 10,
     background: '#DFE3E7' // Make the background transparent
+  },
+  inputWrapper: {
+    padding: '6px 20px 6px 20px',
+    borderRadius: 10,
+    backgroundColor: 'rgba(106, 85, 234,0.03)',
+    color: 'black'
+
+    // background: 'linear-gradient(to bottom, #6385f3, #5a7ff2)'
   }
 }))
 
 export default function Portfolio() {
   const classes = useStyles()
   const theme = useTheme()
-
+  const [showUPI, setShowUPI] = useState(false)
+  const [upi, setUPI] = useState('tahirahmad@ybl')
   let accountSC = '0x87228Dd1eca832d14f4aB0CFb99c471195E7f6dB'
 
   const copyToClip = async () => {
@@ -177,8 +180,91 @@ export default function Portfolio() {
             </Typography>
           </Box>
         </Box>
-      </Box>
+        <Box
+          pl={1}
+          display={'flex'}
+          flexDirection={'column'}
+          justifyContent={'space-around'}
+          alignItems={'flex-end'}
+        >
+          <Box
+            display={'flex'}
+            flexDirection={'row'}
+            justifyContent={'space-around'}
+            alignItems={'flex-end'}
+          >
+            <img src="https://cedge.in/wp-content/uploads/2017/11/upi-1.png" height="24px" />
+            <Typography
+              variant="body2"
+              fontSize={16}
+              fontWeight={400}
+              color={'#ffffff'}
+              textAlign={'center'}
+              alignItems={'center'}
+            >
+              UPI
+            </Typography>
+          </Box>
 
+          <Typography
+            variant="h6"
+            fontSize={16}
+            fontWeight={600}
+            color={'#ffffff'}
+            textAlign={'center'}
+            alignItems={'center'}
+            pt={0.5}
+          >
+            tahirahmad@ybl
+          </Typography>
+          <Typography
+            onClick={() => setShowUPI(true)}
+            variant="caption"
+            fontSize={12}
+            fontWeight={300}
+            color={'#e0e0e0'}
+            textAlign={'center'}
+            alignItems={'center'}
+          >
+            Update UPI
+          </Typography>
+        </Box>
+      </Box>
+      <Box className={classes.summaryCard}>
+        <Box mt={1} className={classes.inputWrapper}>
+          <Typography
+            variant="subtitle2"
+            textAlign={'left'}
+            lineHeight={1}
+            style={{ color: 'black', fontWeight: 600 }}
+          >
+            Your UPI Id to receive crypto payments:
+          </Typography>
+          <Input
+            value={upi}
+            onChange={(event) => setUPI(event.target.value)}
+            fullWidth
+            placeholder="Enter your upi "
+            disableUnderline
+            style={{ fontSize: 14, fontWeight: 400, color: '#f9f9f9' }}
+          />
+          <Button
+            style={{
+              marginTop: 10,
+              backgroundColor: '#f7931a',
+              color: 'black',
+              textDecoration: 'none',
+              borderRadius: '0.5625rem',
+              width: '100%',
+              height: 44
+            }}
+            mt={2}
+            onClick={null}
+          >
+            Update UPI
+          </Button>
+        </Box>
+      </Box>
       <Box className={classes.summaryCardOther}>
         <Typography
           variant="body2"
