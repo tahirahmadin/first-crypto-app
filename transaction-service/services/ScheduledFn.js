@@ -90,7 +90,7 @@ exports.initScheduledJobs = async () => {
     console.log('distributed amounts ', amountsToSend)
 
     // 6. run batch transfer to send tokens back to users.
-    await runBatchTransfer(users, amountsToSend, TOKENS[5].USDC, currentChainId)
+    // await runBatchTransfer(users, amountsToSend, TOKENS[5].USDC, currentChainId)
 
     // 7. update order status on smart contract
     await updateOrders(orderIds, currentChainId)

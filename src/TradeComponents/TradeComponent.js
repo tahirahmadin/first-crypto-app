@@ -311,7 +311,7 @@ const TradeComponent = () => {
         </Box>
       )}
       {isAuthenticated && isSafeDeployed && (
-        <Box display="flex" flexDirection="column" alignItems="flex-start" maxWidth={440}>
+        <Box display="flex" flexDirection="column" alignItems="flex-start" maxWidth={400}>
           {/* <Box display={'flex'} justifyContent={'flex-start'} alignItems={'center'} mb={1}>
             <Typography
               fontSize={12}

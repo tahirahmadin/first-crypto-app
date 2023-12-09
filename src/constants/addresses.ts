@@ -21,4 +21,4 @@ export const TOKENS: any = {
   }
 }
 
-export const CURRENT_CHAIN = 137
+export const CURRENT_CHAIN = 5
