@@ -1,8 +1,8 @@
 import { makeStyles } from '@mui/styles'
 
-import { Box, Typography, useTheme } from '@mui/material'
+import { Box, Button, Typography, useTheme } from '@mui/material'
 
-import { Cancel, CopyAll, LocationCity, MyLocation } from '@mui/icons-material'
+import { Cancel, CopyAll, LocationCity, MyLocation, Support, ThumbUpAlt } from '@mui/icons-material'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     // backgroundColor: "#ffffff",
 
     background: 'linear-gradient(to bottom, #D72B66, #D72B66)',
-    backgroundImage: `url(''), linear-gradient(#808080, #808080)`,
+    backgroundImage: `url(''), linear-gradient(#7A2C88, #EC1E79)`,
     backgroundSize: 'cover',
     marginBottom: 5,
     paddingTop: 30,
@@ -115,17 +115,6 @@ export default function VoteComponent() {
   }
   return (
     <Box>
-      <Typography
-        variant="body2"
-        fontSize={20}
-        fontWeight={700}
-        color={'#000000'}
-        textAlign={'center'}
-        my={1}
-      >
-        My Social Profile
-      </Typography>
-
       <Box className={classes.summaryCard}>
         <Box
           display={'flex'}
@@ -133,37 +122,33 @@ export default function VoteComponent() {
           justifyContent={'space-between'}
           alignItems={'center'}
         >
-          <Typography fontSize={12} fontWeight={600} color={'#f9f9f9'} textAlign={'center'}>
-            <Box>
-              <img
-                src={
-                  'https://as1.ftcdn.net/v2/jpg/05/99/32/28/1000_F_599322870_hufBazDahX69a57xhcprgfn4WSjAlXZj.jpg'
-                }
-                height="100px"
-                width="100px"
-                style={{ borderRadius: '50%' }}
-              />
-            </Box>
-            Tahir Ahmad
+          <img
+            src={'https://i.ytimg.com/vi/-fnk_fDO2rw/maxresdefault.jpg'}
+            height="300px"
+            width="100%"
+            style={{ borderRadius: 10 }}
+          />
+          <Typography
+            variant="h2"
+            fontSize={24}
+            fontWeight={600}
+            color={'#f9f9f9'}
+            textAlign={'left'}
+          >
+            Governance: New strategy proposal - Buy the dip and sell the profit
           </Typography>
           <Typography
             variant="body2"
-            fontSize={12}
+            fontSize={14}
             fontWeight={400}
             color={'#ffffff'}
-            textAlign={'center'}
+            textAlign={'left'}
+            mt={1}
           >
-            21
+            we are looking for votes to support or reject the new strategy to add in the platform
+            which requires you to vote using Waku Communications
           </Typography>
-          <Typography
-            variant="body2"
-            fontSize={12}
-            fontWeight={400}
-            color={'#ffffff'}
-            textAlign={'center'}
-          >
-            21
-          </Typography>
+
           <Box mt={1} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <Box
               style={{ color: 'white' }}
@@ -172,16 +157,22 @@ export default function VoteComponent() {
               alignItems={'center'}
               mr={2}
             >
-              <LocationCity style={{ color: 'white' }} />{' '}
-              <Typography
-                variant="body2"
-                fontSize={12}
-                fontWeight={400}
-                color={'#ffffff'}
-                textAlign={'center'}
+              <Button
+                style={{
+                  marginTop: 10,
+                  backgroundColor: '#f7931a',
+                  color: 'black',
+                  textDecoration: 'none',
+                  borderRadius: '0.5625rem',
+                  width: '100%',
+                  height: 44
+                }}
+                mt={2}
+                onClick={null}
               >
-                32
-              </Typography>
+                <ThumbUpAlt style={{ color: 'black' }} />
+                Support
+              </Button>
             </Box>
             <Box
               style={{ color: 'white' }}
@@ -190,16 +181,21 @@ export default function VoteComponent() {
               alignItems={'center'}
               ml={2}
             >
-              <MyLocation style={{ color: 'white' }} />{' '}
-              <Typography
-                variant="body2"
-                fontSize={12}
-                fontWeight={400}
-                color={'#ffffff'}
-                textAlign={'center'}
+              <Button
+                style={{
+                  marginTop: 10,
+                  backgroundColor: '#f7931a',
+                  color: 'black',
+                  textDecoration: 'none',
+                  borderRadius: '0.5625rem',
+                  width: '100%',
+                  height: 44
+                }}
+                mt={2}
+                onClick={null}
               >
-                India
-              </Typography>
+                <ThumbUpAlt style={{ color: 'black' }} /> Reject
+              </Button>
             </Box>
           </Box>
         </Box>{' '}
@@ -211,78 +207,8 @@ export default function VoteComponent() {
           textAlign={'center'}
           mt={3}
         >
-          Wallet Address
+          Voting will end in next 35 minutues
         </Typography>
-        <Typography
-          variant="body2"
-          fontSize={12}
-          fontWeight={400}
-          color={'#ffffff'}
-          textAlign={'center'}
-        >
-          {accountSC} <CopyAll onClick={copyToClip} style={{ cursor: 'pointer' }} />
-        </Typography>
-      </Box>
-
-      <Typography
-        variant="body2"
-        fontSize={15}
-        fontWeight={700}
-        color={'#000000'}
-        textAlign={'center'}
-        my={1}
-      >
-        My Activities
-      </Typography>
-      <Box className={classes.summaryCardOther}>
-        <Box
-          display={'flex'}
-          flexDirection={'row'}
-          justifyContent={'space-between'}
-          alignItems={'center'}
-        >
-          <Box
-            display={'flex'}
-            flexDirection={'row'}
-            justifyContent={'flex-start'}
-            alignItems={'center'}
-          >
-            <Box>
-              <img
-                src={
-                  'https://w7.pngwing.com/pngs/268/1013/png-transparent-ethereum-eth-hd-logo-thumbnail.png'
-                }
-                height="30px"
-                width="30px"
-                style={{ borderRadius: '50%' }}
-              />
-            </Box>
-            <Box
-              ml={1}
-              display={'flex'}
-              flexDirection={'column'}
-              justifyContent={'flex-start'}
-              alignItems={'flex-start'}
-            >
-              <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
-                DCA for $21
-              </Typography>
-              <Typography
-                variant="body2"
-                fontSize={12}
-                fontWeight={400}
-                color={'#272727'}
-                textAlign={'center'}
-              >
-                Daily | 21 Orders
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box>
-            <Cancel />
-          </Box>
-        </Box>{' '}
       </Box>
     </Box>
   )

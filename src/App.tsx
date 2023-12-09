@@ -12,6 +12,7 @@ import TradeComponent from './TradeComponents/TradeComponent'
 import { Grid } from '@mui/material'
 import Portfolio from './pages/PortfolioComponents/Portfolio'
 import HistoryComponent from './pages/PortfolioComponents/HistoryComponent'
+import VoteComponent from './pages/VoteComponents/VoteComponent'
 
 function App() {
   const { setChainId } = useAccountAbstraction()
@@ -46,7 +47,7 @@ function App() {
             <Grid item md={6}>
               <main style={{ flexGrow: 1 }}>
                 {activeStep === 0 && <TradeComponent />}
-                {activeStep === 1 && <Portfolio />}
+                {activeStep === 1 && <VoteComponent />}
                 {activeStep === 2 && <Portfolio />}
               </main>
             </Grid>
