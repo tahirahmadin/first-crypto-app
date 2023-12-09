@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import { QrScanner } from '@yudiel/react-qr-scanner'
 import { Box, Button, IconButton, Input, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -105,7 +106,8 @@ export default function ScanAndPay() {
   const [screenCase, setScreenCase] = useState(0)
   const [amount, setAmount] = useState(0)
 
-  let accountSC = '0x87228Dd1eca832d14f4aB0CFb99c471195E7f6dB'
+  const { safeSelected } = useAccountAbstraction()
+  let accountSC = safeSelected
 
   const handleQrScan = (data) => {
     if (data) {

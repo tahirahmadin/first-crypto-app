@@ -10,6 +10,7 @@ import {
   getTokenBalancesOfWalletAddress,
   getTokenDetailsByAddresses
 } from 'src/actions/serverActions'
+import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -121,9 +122,11 @@ export default function Portfolio() {
   const theme = useTheme()
   const [totalPortfolio, setTotalPortfolio] = useState(12000)
   const [showUPI, setShowUPI] = useState(false)
-  const [upi, setUPI] = useState('tahirahmad@ybl')
-  const [activeTokens, setActiveTokens] = useState('tahirahmad@ybl')
-  let accountSC = '0x87228Dd1eca832d14f4aB0CFb99c471195E7f6dB'
+  const [upi, setUPI] = useState('tahirahmad.in@axl')
+  const [activeTokens, setActiveTokens] = useState(null)
+
+  const { safeSelected } = useAccountAbstraction()
+  let accountSC = safeSelected
 
   // Fetch Balances of user
   useEffect(() => {
@@ -301,7 +304,7 @@ export default function Portfolio() {
             alignItems={'center'}
             pt={0.5}
           >
-            tahirahmad@ybl
+            tahirahmad.in@axl
           </Typography>
           <Button
             style={{ backgroundColor: 'white', color: 'black', width: 'fit-content', height: 30 }}

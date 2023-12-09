@@ -2,11 +2,13 @@ import { Box, Button, Typography, useTheme } from '@mui/material'
 // Waku imports
 import { ContentPairProvider, useWaku } from '@waku/react'
 import StrategyVotingComponent from './StrategyVotingComponent'
+import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 
 export default function VoteComponent() {
   const theme = useTheme()
 
-  let accountSC = '0x87228Dd1eca832d14f4aB0CFb99c471195E7f6dB'
+  const { safeSelected } = useAccountAbstraction()
+  let accountSC = safeSelected
 
   const copyToClip = async () => {
     await navigator.clipboard.writeText(accountSC)

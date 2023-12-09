@@ -134,7 +134,7 @@ export default function StrategyVotingComponent(props) {
     decoder
   })
   const { safeSelected } = useAccountAbstraction()
-  let accountSC = safeSelected ? safeSelected : '0x9D7117a07fca9F22911d379A9fd5118A5FA4F448'
+  let accountSC = safeSelected
 
   const { messages: filterMessages } = useFilterMessages({ node, decoder })
 
@@ -194,8 +194,10 @@ export default function StrategyVotingComponent(props) {
       if (message === undefined) {
         return
       }
+
       if (message.sender === accountSC) {
         setIsVotes(true)
+        setVoteType(message.message)
       }
       if (message.message === '1') {
         let tempObj = {

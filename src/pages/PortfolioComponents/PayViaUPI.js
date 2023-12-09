@@ -4,6 +4,7 @@ import { makeStyles } from '@mui/styles'
 import { Box, Button, IconButton, Typography, useMediaQuery, useTheme } from '@mui/material'
 
 import { Cancel, CopyAll } from '@mui/icons-material'
+import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -103,7 +104,8 @@ export default function PayViaUPI({ setStep }) {
   const classes = useStyles()
   const theme = useTheme()
 
-  let accountSC = '0x87228Dd1eca832d14f4aB0CFb99c471195E7f6dB'
+  const { safeSelected } = useAccountAbstraction()
+  let accountSC = safeSelected
 
   const copyToClip = async () => {
     await navigator.clipboard.writeText(accountSC)
