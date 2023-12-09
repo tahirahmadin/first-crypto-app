@@ -103,6 +103,6 @@ const chains: Chain[] = [
   sepoliaChain
 ]
 
-export const initialChain = polygonChain
+export const initialChain = goerliChain
 
 export default chains
