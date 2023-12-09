@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   Box,
   Button,
@@ -10,6 +10,11 @@ import {
   useTheme
 } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
+import { getERC20Allowance } from 'src/utils/getERC20Info'
+import { FIRST_CRYPTO, TOKENS } from 'src/constants/addresses'
+import { BN, toWei } from 'src/utils/unitConverter'
+import GelatoTaskStatusLabel from 'src/components/gelato-task-status-label/GelatoTaskStatusLabel'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -111,20 +116,78 @@ const TradeComponent = () => {
   const [stakeCase, setStakeCase] = useState(0)
   const [approveCase, setApproveCase] = useState(0)
   const [refetch, setRefetch] = useState(0)
-  const [isApproved, setIsApproved] = useState(false)
-  const [totalValue, setTotalValue] = useState(0)
+  const [allowanceAmount, setAllowance] = useState('0')
+  // const [isApproved, setIsApproved] = useState(false)
 
-  let accountSC = '0x87228Dd1eca832d14f4aB0CFb99c471195E7f6dB'
+  const [transactionHash, setTransactionHash] = useState('')
 
-  const handleApprove = async () => {}
+  // const [totalValue, setTotalValue] = useState(0)
+  // const [approved, setApproved] = useState(false)
 
-  const handleStake = async () => {}
+  const selectedInputToken = TOKENS.USDC[5]
+  const selectedContract = FIRST_CRYPTO[5]
+
+  const {
+    relayTransaction,
+    approveRelayTransaction,
+    web3Provider,
+    safeSelected,
+    isAuthenticated,
+    isRelayerLoading,
+    gelatoTaskId,
+
+    loginWeb3Auth
+  } = useAccountAbstraction()
 
   useEffect(() => {
-    if (time && amount) {
-      setTotalValue(amount * time)
+    console.log('state test ', { isAuthenticated, safeSelected })
+  }, [isAuthenticated, safeSelected])
+
+  const handleLogin = async () => {
+    loginWeb3Auth()
+  }
+
+  const totalValue = useMemo(() => amount * time, [time, amount])
+
+  // Initial render and When success of tx
+  async function checkAllowance() {
+    const allowance = await getERC20Allowance(
+      selectedInputToken,
+      web3Provider,
+      safeSelected,
+      selectedContract
+    )
+
+    setAllowance(allowance?.toString())
+  }
+
+  const isApproved = useMemo(() => {
+    console.log('Allowance Value', allowanceAmount)
+    if (BN(allowanceAmount).gte(totalValue)) {
+      return true
+    } else {
+      return false
     }
-  }, [time, amount])
+  }, [allowanceAmount, totalValue])
+  useEffect(() => {
+    console.log('safe test allowance ', totalValue)
+
+    if (safeSelected) {
+      checkAllowance()
+    }
+  }, [safeSelected, refetch, isAuthenticated])
+
+  const handleApprove = async () => {
+    approveRelayTransaction('10000000000', selectedInputToken, selectedContract)
+  }
+
+  const handleStake = async () => {
+    relayTransaction(amount, time, selectedInputToken)
+  }
+  const handleSuccessUpdate = async () => {
+    console.log('transaction test success')
+    setRefetch(refetch + 1)
+  }
 
   return (
     <Box
@@ -297,31 +360,65 @@ const TradeComponent = () => {
           </Typography>
         </Box>
 
-        <Button
-          style={{
-            marginTop: 10,
-            backgroundColor: '#f7931a',
-            color: 'black',
-            textDecoration: 'none',
-            borderRadius: '0.5625rem',
-            width: '100%',
-            height: 44
-          }}
-          mt={2}
-          // disabled={!accountSC}
-          onClick={isApproved ? handleStake : handleApprove}
-        >
-          {isApproved ? 'Buy Now' : 'Approve Spending'}{' '}
-          {(approveCase > 0 || (stakeCase > 0 && stakeCase < 3)) && (
-            <CircularProgress
-              size={18}
-              style={{
-                color: 'white',
-                marginLeft: 5
-              }}
-            />
-          )}
-        </Button>
+        {isAuthenticated ? (
+          <Button
+            style={{
+              marginTop: 10,
+              backgroundColor: '#f7931a',
+              color: 'black',
+              textDecoration: 'none',
+              borderRadius: '0.5625rem',
+              width: '100%',
+              height: 44
+            }}
+            mt={2}
+            // disabled={!accountSC}
+            onClick={isApproved ? handleStake : handleApprove}
+          >
+            {isApproved
+              ? isRelayerLoading
+                ? 'Investing...'
+                : 'Buy Now'
+              : isRelayerLoading
+              ? 'Approving...'
+              : 'Approve Spending'}{' '}
+            {(approveCase > 0 || (stakeCase > 0 && stakeCase < 3)) && (
+              <CircularProgress
+                size={18}
+                style={{
+                  color: 'white',
+                  marginLeft: 5
+                }}
+              />
+            )}
+          </Button>
+        ) : (
+          <Button
+            style={{
+              marginTop: 10,
+              backgroundColor: '#f7931a',
+              color: 'black',
+              textDecoration: 'none',
+              borderRadius: '0.5625rem',
+              width: '100%',
+              height: 44
+            }}
+            mt={2}
+            // disabled={!accountSC}
+            onClick={handleLogin}
+          >
+            Login
+          </Button>
+        )}
+        {gelatoTaskId && (
+          <GelatoTaskStatusLabel
+            gelatoTaskId={gelatoTaskId}
+            chainId={5}
+            setTransactionHash={setTransactionHash}
+            transactionHash={transactionHash}
+            handleSuccessUpdate={handleSuccessUpdate}
+          />
+        )}
       </Box>
     </Box>
   )

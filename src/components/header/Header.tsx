@@ -11,6 +11,7 @@ import ChainLabel from 'src/components/chain-label/ChainLabel'
 import FirstCryptoLogo from 'src/assets/CryptoFirst.png'
 import { useTheme } from 'src/store/themeContext'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
+import ChainSelector from '../chain-selector/ChainSelector'
 
 type HeaderProps = {
   setStep: (newStep: number) => void
@@ -43,7 +44,8 @@ function Header({ setStep }: HeaderProps) {
             {/* chain label */}
             {chain && (
               <Box display="flex" justifyContent="flex-end" alignItems="center">
-                <ChainLabel chain={chain} />
+                {/* <ChainLabel chain={chain} /> */}
+                <ChainSelector />
               </Box>
             )}
           </Box>

@@ -19,6 +19,7 @@
     "@stripe/stripe-js": "^1.52.1",
     "@web3auth/safeauth-embed": "^0.0.0",
     "axios": "^1.6.2",
+    "bignumber.js": "^9.1.2",
     "ethers": "^6.9.0",
     "react": "^18.2.0",
     "react-code-blocks": "^0.1.5",
