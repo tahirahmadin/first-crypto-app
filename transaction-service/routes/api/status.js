@@ -1,46 +1,51 @@
-const express = require("express");
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 const {
   createFusionOrder,
   watchOrderStatus,
   getOrderQuote,
-  createFusionOrder2,
-} = require("../../services/fusion");
-const { TOKENS } = require("../../constants");
-const { toWei } = require("../../services/helper");
-const { getPendingOrders } = require("../../services/contractReads");
+  createFusionOrder2
+} = require('../../services/fusion')
+const { TOKENS } = require('../../constants')
+const { toWei } = require('../../services/helper')
+const { getPendingOrders } = require('../../services/contractReads')
+const { distributeValue } = require('../../services/transfer')
 
-
-router.get("/status/:orderHash", async (req, res) => {
+router.get('/status/:orderHash', async (req, res) => {
   try {
-    const orderHash = req.params.orderHash;
-    const orderStatus = await watchOrderStatus(orderHash, 137);
+    const orderHash = req.params.orderHash
+    const orderStatus = await watchOrderStatus(orderHash, 137)
 
     // console.log("order status ", orderStatus);
 
-    return res.status(200).json(orderStatus);
+    return res.status(200).json(orderStatus)
   } catch (error) {
-    console.log("error ", error);
-    return res.status(500).json({ errors: [{ msg: "Server error" }] });
+    console.log('error ', error)
+    return res.status(500).json({ errors: [{ msg: 'Server error' }] })
   }
-});
+})
 
-router.get("/pending-orders", async (req, res) => {
+router.get('/pending-orders', async (req, res) => {
   try {
+    const orders = await getPendingOrders(5)
 
+    console.log('orders  ', orders)
 
-    const orders = await getPendingOrders(5);
+    // Example usage
+    const inputs = [10, 20, 10, 30]
+    const totalValue = 200
 
-    // console.log("order status ", orderStatus);
+    const result = distributeValue(totalValue, inputs)
+    console.log(result)
 
-    return res.status(200).json(orders);
+    return res.status(200).json({ orders, result })
   } catch (error) {
-    console.log("error ", error);
-    return res.status(500).json({ errors: [{ msg: "Server error" }] });
+    console.log('error ', error)
+    return res.status(500).json({ errors: [{ msg: 'Server error' }] })
   }
-});
+})
 
-router.get("/create-order", async (req, res) => {
+router.get('/create-order', async (req, res) => {
   try {
     // const blockTime = await getCurrentBlockTimestampWithRetry();
     // console.log("blocktime ", blockTime);
@@ -66,12 +71,7 @@ router.get("/create-order", async (req, res) => {
     //   toWei("0.2", 6)
     // );
 
-    const order = await createFusionOrder2(
-      137,
-      TOKENS[137].USDT,
-      TOKENS[137].WBTC,
-      toWei("0.5", 6)
-    );
+    const order = await createFusionOrder2(137, TOKENS[137].USDT, TOKENS[137].WBTC, toWei('0.5', 6))
 
     // console.log('order ')
 
@@ -86,11 +86,11 @@ router.get("/create-order", async (req, res) => {
 
     // console.log("order status ", orderStatus);
 
-    return res.status(200).json({ order });
+    return res.status(200).json({ order })
   } catch (error) {
-    console.log("error ", error);
-    return res.status(500).json({ errors: [{ msg: "Server error" }] });
+    console.log('error ', error)
+    return res.status(500).json({ errors: [{ msg: 'Server error' }] })
   }
-});
+})
 
-module.exports = router;
+module.exports = router

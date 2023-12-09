@@ -1,49 +1,46 @@
-const { ethers } = require("ethers");
-const { CONTRACT_ADDRESSES, AIRNODE, NETWORK_RPC } = require("../constants");
-const firstCryptoABi = require("../abis/firstCrypto.json");
-
-
+const { ethers } = require('ethers')
+const { CONTRACT_ADDRESSES, NETWORK_RPC } = require('../constants')
+const firstCryptoABi = require('../abis/firstCrypto.json')
 
 const getPendingOrders = async (chainId) => {
   try {
-    // const pendingTransaction = transactionCache.get("pending_transaction");
-
-    // if (pendingTransaction === "running") {
-    //   return {
-    //     success: false,
-    //     hash: null,
-    //     message: "already running",
-    //   };
-    // }
-    // transactionCache.set("pending_transaction", "running", 1 * 60 * 60);
-
-    // Create a provider and wallet (signer)
-    const nodeUrl = NETWORK_RPC[chainId];
-    const provider = new ethers.providers.JsonRpcProvider(nodeUrl);
+    const nodeUrl = NETWORK_RPC[chainId]
+    const provider = new ethers.providers.JsonRpcProvider(nodeUrl)
     // const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
     const contract = new ethers.Contract(
       CONTRACT_ADDRESSES.FIRST_CRYPTO?.[chainId],
       firstCryptoABi,
       provider
-    );
+    )
 
     //: add blocktime stamp to apply filters based on timestamp on orders
-    const blockTimestamp = 0;
+    const blockTimestamp = 0
 
-
-    const pendingOrders = await contract.getPendingOrders(blockTimestamp);
-    console.log('orders ', pendingOrders);
+    const pendingOrders = await contract.getPendingOrders(blockTimestamp)
 
     // end transaction
+    const formattedOrders = pendingOrders?.map((ele) => {
+      return {
+        orderId: ele?.orderId?.toString(),
+        user: ele?.user,
+        tokenAddress: ele?.tokenAddress,
+        depositAmount: ele?.depositAmount?.toString(),
+        remainingAmount: ele?.remainingAmount?.toString(),
+        fiatOrderAmount: ele?.fiatOrderAmount?.toString(),
+        tokenAccumulated: ele?.tokenAccumulated?.toString(),
+        grids: ele?.grids?.toString(),
+        executedGrids: ele?.executedGrids?.toString(),
+        open: ele?.open
+      }
+    })
 
-    return pendingOrders;
+    return formattedOrders
   } catch (error) {
     console.log('pending orders error ', error)
 
-   
-    return [];
+    return []
   }
-};
+}
 
-module.exports = { getPendingOrders};
+module.exports = { getPendingOrders }
