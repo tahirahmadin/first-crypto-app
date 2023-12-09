@@ -192,23 +192,53 @@ const TradeComponent = () => {
   return (
     <Box>
       {!isAuthenticated && (
-        <Box className={classes.card}>
-          <Button
-            style={{
-              marginTop: 10,
-              backgroundColor: '#f7931a',
-              color: 'black',
-              textDecoration: 'none',
-              borderRadius: '0.5625rem',
-              width: '100%',
-              height: 44
-            }}
-            mt={2}
-            // disabled={!accountSC}
-            onClick={handleLogin}
+        <Box>
+          <Box
+            className={classes.card}
+            style={{ minHeight: 200 }}
+            display={'flex'}
+            flexDirection={'column'}
+            alignItems={'center'}
           >
-            Login
-          </Button>
+            <img src="login.png" width="200px" />
+            <Typography
+              variant="body2"
+              fontSize={20}
+              fontWeight={700}
+              color={'#000000'}
+              textAlign={'center'}
+              my={1}
+            >
+              Login to FirstCrypto
+            </Typography>
+            <Typography
+              variant="body2"
+              fontSize={14}
+              fontWeight={400}
+              color={'#000000'}
+              textAlign={'center'}
+              my={1}
+              px={2}
+            >
+              Login with your favourite social account to enable the world of crypto
+            </Typography>
+            <Button
+              style={{
+                marginTop: 10,
+                backgroundColor: '#f7931a',
+                color: 'black',
+                textDecoration: 'none',
+                borderRadius: '0.5625rem',
+                width: '100%',
+                height: 44
+              }}
+              mt={2}
+              // disabled={!accountSC}
+              onClick={handleLogin}
+            >
+              Login now
+            </Button>
+          </Box>
         </Box>
       )}
       {isAuthenticated && (
