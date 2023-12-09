@@ -7,6 +7,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.19",
     "@mui/material": "^5.14.19",
+    "@mui/styles": "^5.14.20",
     "@safe-global/account-abstraction-kit-poc": "2.0.0",
     "@safe-global/auth-kit": "2.0.0",
     "@safe-global/onramp-kit": "2.0.0",
