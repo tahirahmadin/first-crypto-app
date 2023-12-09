@@ -8,6 +8,7 @@ import PayViaUPI from './PayViaUPI'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { getPositionInfo } from 'src/utils/getUserPosition'
 import { fromWei } from 'src/utils/unitConverter'
+import { CURRENT_CHAIN } from 'src/constants/addresses'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -109,14 +110,14 @@ export default function HistoryComponent({ setStep }) {
 
   const [userPositions, setUserPositions] = useState([])
 
-  const { safeSelected, web3Provider, chainId } = useAccountAbstraction()
+  const { safeSelected, web3Provider, chain } = useAccountAbstraction()
 
   useEffect(() => {
-    if (!safeSelected || !web3Provider || !chainId) {
+    if (!safeSelected || !web3Provider) {
       return
     }
     async function load() {
-      const data = await getPositionInfo(web3Provider, safeSelected)
+      const data = await getPositionInfo(web3Provider, CURRENT_CHAIN, safeSelected)
 
       setUserPositions(data.formattedOrders)
     }
@@ -125,7 +126,7 @@ export default function HistoryComponent({ setStep }) {
     setInterval(() => {
       load()
     }, 60000)
-  }, [safeSelected, web3Provider, chainId])
+  }, [safeSelected, web3Provider])
 
   const copyToClip = async () => {
     await navigator.clipboard.writeText(safeSelected)

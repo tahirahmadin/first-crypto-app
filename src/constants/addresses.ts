@@ -1,9 +1,9 @@
-export const FIRST_CRYPTO = {
+export const FIRST_CRYPTO: any = {
   5: '0x8d5Ff28faDe46A2f41D38cC1854E11c958211792',
   137: '0xe83C2b017449F5105656199bA34E40A646F96C33'
 }
 
-export const TOKENS = {
+export const TOKENS: any = {
   USDC: {
     137: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
     534352: '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4',
@@ -20,3 +20,5 @@ export const TOKENS = {
     5: ''
   }
 }
+
+export const CURRENT_CHAIN = 137
