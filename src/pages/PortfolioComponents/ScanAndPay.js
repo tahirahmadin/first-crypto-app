@@ -70,13 +70,13 @@ const useStyles = makeStyles((theme) => ({
     backgroundImage: `url("eth-background.jpg"), linear-gradient(#9DA7DA, #5C6AC0)`,
     backgroundSize: 'cover',
     marginBottom: 5,
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 12,
+    paddingBottom: 12,
     paddingLeft: 14,
     paddingRight: 14,
     width: '100%',
     height: '100%',
-    minHeight: 100,
+    minHeight: 70,
 
     boxShadow: '0px 12px 24px rgba(0, 0, 0, 0.03)',
     borderRadius: '1rem'
@@ -283,9 +283,18 @@ export default function ScanAndPay() {
   }
   return (
     <Box>
-      <Box className={classes.balanceCard} maxWidth={260} minWidth={150}>
-        <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
-          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+      <Box className={classes.balanceCard} maxWidth={300} minWidth={150}>
+        <Box>
+          <Typography
+            variant="h1"
+            fontSize={32}
+            fontWeight={800}
+            color={'#f9f9f9'}
+            textAlign={'center'}
+          >
+            ${balance}
+          </Typography>
+          <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
             <img
               src="https://cdn.iconscout.com/icon/free/png-256/free-upi-money-transfer-1817147-1538015.png"
               height="24px"
@@ -299,33 +308,12 @@ export default function ScanAndPay() {
               textAlign={'center'}
               ml={1}
             >
-              Wallet
+              Crypto Balance
             </Typography>
           </Box>
         </Box>
-        <Box>
-          <Typography
-            variant="h1"
-            fontSize={44}
-            fontWeight={800}
-            color={'#f9f9f9'}
-            textAlign={'center'}
-            py={1}
-          >
-            ${balance}
-          </Typography>
-          <Typography
-            variant="body2"
-            fontSize={12}
-            fontWeight={400}
-            color={'#f9f9f9'}
-            textAlign={'center'}
-          >
-            Crypto Balance
-          </Typography>
-        </Box>
       </Box>
-      <Box className={classes.summaryCard} maxWidth={260} minWidth={150}>
+      <Box className={classes.summaryCard} maxWidth={300} minWidth={150}>
         {screenCase === 0 && (
           <Box
             display={'flex'}
