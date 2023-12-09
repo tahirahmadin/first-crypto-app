@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function PayViaUPI() {
+export default function PayViaUPI({ setStep }) {
   const classes = useStyles()
   const theme = useTheme()
 
@@ -140,6 +140,7 @@ export default function PayViaUPI() {
             Pay your merchant with crypto
           </Typography>
           <Button
+            onClick={() => setStep(3)}
             style={{
               marginTop: 10,
               backgroundColor: '#f7931a',

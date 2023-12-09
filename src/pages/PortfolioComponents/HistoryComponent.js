@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function HistoryComponent() {
+export default function HistoryComponent({ setStep }) {
   const classes = useStyles()
   const theme = useTheme()
 
@@ -112,7 +112,7 @@ export default function HistoryComponent() {
   }
   return (
     <Box>
-      <PayViaUPI />
+      <PayViaUPI setStep={setStep} />
       <Box
         px={2}
         pt={2}

@@ -16,6 +16,7 @@ import VoteComponent from './pages/VoteComponents/VoteComponent'
 // Waku imports
 import { LightNodeProvider } from '@waku/react'
 import { Protocols } from '@waku/sdk'
+import ScanAndPay from './pages/PortfolioComponents/ScanAndPay'
 
 function App() {
   const { setChainId } = useAccountAbstraction()
@@ -24,8 +25,6 @@ function App() {
   const setStep = useCallback((newStep: number) => {
     setActiveStep(newStep)
   }, [])
-
-  const ActiveStepComponent = steps[activeStep].component
 
   return (
     <LightNodeProvider
@@ -49,10 +48,13 @@ function App() {
                   {activeStep === 0 && <TradeComponent />}
                   {activeStep === 1 && <VoteComponent />}
                   {activeStep === 2 && <Portfolio />}
+                  {activeStep === 3 && <ScanAndPay />}
                 </main>
               </Grid>
               <Grid item md={3} sm={12} xs={12}>
-                <main style={{ flexGrow: 1 }}>{activeStep === 2 && <HistoryComponent />}</main>
+                <main style={{ flexGrow: 1 }}>
+                  {activeStep === 2 && <HistoryComponent setStep={setStep} />}
+                </main>
               </Grid>
             </Grid>
           </Box>
@@ -63,21 +65,3 @@ function App() {
 }
 
 export default App
-
-const steps = [
-  {
-    // Auth Kit step
-    // TODO
-    component: TradeComponent,
-    nextLabel: 'to Onramp Kit'
-  },
-  {
-    // Onramp Kit step
-    component: Portfolio,
-    nextLabel: 'to Relay Kit'
-  },
-  {
-    // Relay Kit step
-    component: RelayerKitDemo
-  }
-]

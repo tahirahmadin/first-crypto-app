@@ -179,13 +179,15 @@ const NavMenu = ({ setStep, activeStep }) => {
             <Analytics
               style={{
                 marginRight: 10,
-                color: activeStep === 2 ? '#000000' : '#9e9e9e'
+                color: activeStep === 2 || activeStep === 3 ? '#000000' : '#9e9e9e'
               }}
             />
 
             <Typography
               variant="title1"
-              className={activeStep === 2 ? classes.selectedMenuTitle : classes.menuTitle}
+              className={
+                activeStep === 2 || activeStep === 3 ? classes.selectedMenuTitle : classes.menuTitle
+              }
             >
               Portfolio
             </Typography>
