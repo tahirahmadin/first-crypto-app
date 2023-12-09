@@ -11,6 +11,7 @@ import { useAccountAbstraction } from './store/accountAbstractionContext'
 import TradeComponent from './TradeComponents/TradeComponent'
 import { Grid } from '@mui/material'
 import Portfolio from './pages/PortfolioComponents/Portfolio'
+import HistoryComponent from './pages/PortfolioComponents/HistoryComponent'
 
 function App() {
   const { setChainId } = useAccountAbstraction()
@@ -38,7 +39,7 @@ function App() {
           margin="120px auto 42px auto"
         >
           {' '}
-          <Grid container>
+          <Grid container spacing={2}>
             <Grid item md={3}>
               <NavMenu setStep={setStep} activeStep={activeStep} />
             </Grid>
@@ -48,6 +49,9 @@ function App() {
                 {activeStep === 1 && <Portfolio />}
                 {activeStep === 2 && <Portfolio />}
               </main>
+            </Grid>
+            <Grid item md={3}>
+              <main style={{ flexGrow: 1 }}>{activeStep === 2 && <HistoryComponent />}</main>
             </Grid>
           </Grid>
         </Box>

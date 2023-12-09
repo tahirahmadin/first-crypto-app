@@ -3,15 +3,7 @@ import { makeStyles } from '@mui/styles'
 
 import { Box, IconButton, Typography, useMediaQuery, useTheme } from '@mui/material'
 
-import {
-  Cancel,
-  CopyAll,
-  CurrencyBitcoin,
-  LensBlur,
-  LocationCity,
-  MyLocation,
-  Twitter
-} from '@mui/icons-material'
+import { Cancel, CopyAll } from '@mui/icons-material'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -39,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: 14,
     width: '100%',
     height: '100%',
-    minHeight: 60,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-around',
@@ -108,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function Portfolio() {
+export default function HistoryComponent() {
   const classes = useStyles()
   const theme = useTheme()
 
@@ -119,85 +110,101 @@ export default function Portfolio() {
     alert('Wallet address is copied')
   }
   return (
-    <Box>
-      <Box className={classes.summaryCard}>
+    <Box
+      px={2}
+      pt={2}
+      pb={2}
+      bgcolor={'#ffffff'}
+      display="flex"
+      flexDirection="column"
+      height="100%"
+      maxWidth={260}
+      minWidth={150}
+      borderRadius={4}
+    >
+      <Typography
+        variant="body2"
+        fontSize={15}
+        fontWeight={700}
+        color={'#000000'}
+        textAlign={'left'}
+        mb={1}
+      >
+        Trade history
+      </Typography>
+      <Box className={classes.summaryCardOther}>
         <Box
           display={'flex'}
           flexDirection={'row'}
-          justifyContent={'flex-start'}
+          justifyContent={'space-between'}
           alignItems={'center'}
         >
-          <img
-            src={
-              'https://as1.ftcdn.net/v2/jpg/05/99/32/28/1000_F_599322870_hufBazDahX69a57xhcprgfn4WSjAlXZj.jpg'
-            }
-            height="80px"
-            width="80px"
-            style={{ borderRadius: 20 }}
-          />
           <Box
-            pl={1}
+            display={'flex'}
+            flexDirection={'row'}
+            justifyContent={'flex-start'}
+            alignItems={'center'}
+          >
+            <Box>
+              <img
+                src={
+                  'https://w7.pngwing.com/pngs/268/1013/png-transparent-ethereum-eth-hd-logo-thumbnail.png'
+                }
+                height="25px"
+                width="25px"
+                style={{ borderRadius: '50%' }}
+              />
+            </Box>
+            <Box
+              ml={1}
+              display={'flex'}
+              flexDirection={'column'}
+              justifyContent={'center'}
+              alignItems={'flex-start'}
+            >
+              <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
+                DCA for $100
+              </Typography>
+              <Typography
+                variant="caption"
+                fontSize={12}
+                fontWeight={400}
+                color={'#272727'}
+                textAlign={'center'}
+              >
+                7 orders
+              </Typography>
+            </Box>
+          </Box>
+
+          <Box
+            ml={1}
             display={'flex'}
             flexDirection={'column'}
-            justifyContent={'space-around'}
-            alignItems={'flex-start'}
+            justifyContent={'center'}
+            alignItems={'flex-end'}
           >
-            <Typography
-              variant="body2"
-              fontSize={12}
-              fontWeight={400}
-              color={'#ffffff'}
-              textAlign={'center'}
-              alignItems={'center'}
-            >
-              {accountSC.slice(0, 8)}
-              {'... '} {accountSC.slice(-8)}
-              <CopyAll onClick={copyToClip} style={{ cursor: 'pointer' }} />
-            </Typography>
-            <Typography
-              variant="h3"
-              fontSize={32}
-              fontWeight={600}
-              color={'#ffffff'}
-              textAlign={'center'}
-              alignItems={'center'}
-              pt={0.5}
-            >
-              $21,000
+            <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
+              $10 USDT
             </Typography>
             <Typography
               variant="caption"
-              fontSize={12}
-              fontWeight={300}
-              color={'#e0e0e0'}
+              fontSize={10}
+              fontWeight={400}
+              color={'#272727'}
               textAlign={'center'}
-              alignItems={'center'}
             >
-              Wallet Balance
+              0.0032 ETH
             </Typography>
           </Box>
         </Box>
       </Box>
-
       <Box className={classes.summaryCardOther}>
-        <Typography
-          variant="body2"
-          fontSize={15}
-          fontWeight={700}
-          color={'#000000'}
-          textAlign={'left'}
-          my={1}
-        >
-          Tokens
-        </Typography>
-
-        {/* //Code fo tokens */}
         <Box
           display={'flex'}
           flexDirection={'row'}
           justifyContent={'space-between'}
           alignItems={'center'}
-          mb={2}
         >
           <Box
             display={'flex'}
@@ -210,8 +217,8 @@ export default function Portfolio() {
                 src={
                   'https://w7.pngwing.com/pngs/268/1013/png-transparent-ethereum-eth-hd-logo-thumbnail.png'
                 }
-                height="30px"
-                width="30px"
+                height="25px"
+                width="25px"
                 style={{ borderRadius: '50%' }}
               />
             </Box>
@@ -219,59 +226,52 @@ export default function Portfolio() {
               ml={1}
               display={'flex'}
               flexDirection={'column'}
-              justifyContent={'flex-start'}
+              justifyContent={'center'}
               alignItems={'flex-start'}
             >
               <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
-                USDT
+                DCA for $100
               </Typography>
               <Typography
                 variant="caption"
                 fontSize={12}
-                fontWeight={300}
-                color={'#757575'}
+                fontWeight={400}
+                color={'#272727'}
                 textAlign={'center'}
               >
-                USD Tether
+                7 orders
               </Typography>
             </Box>
           </Box>
 
-          <Box>
-            <Box
-              ml={1}
-              display={'flex'}
-              flexDirection={'column'}
-              justifyContent={'center'}
-              alignItems={'flex-end'}
+          <Box
+            ml={1}
+            display={'flex'}
+            flexDirection={'column'}
+            justifyContent={'center'}
+            alignItems={'flex-end'}
+          >
+            <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
+              $10 USDT
+            </Typography>
+            <Typography
+              variant="caption"
+              fontSize={10}
+              fontWeight={400}
+              color={'#272727'}
+              textAlign={'center'}
             >
-              <Typography
-                variant="body1"
-                fontSize={15}
-                fontWeight={600}
-                color={'#272727'}
-                textAlign={'center'}
-              >
-                $120
-              </Typography>
-              <Typography
-                variant="caption"
-                fontSize={10}
-                fontWeight={300}
-                color={'#757575'}
-                textAlign={'center'}
-              >
-                $121
-              </Typography>
-            </Box>
+              0.0032 ETH
+            </Typography>
           </Box>
         </Box>
+      </Box>
+      <Box className={classes.summaryCardOther}>
         <Box
           display={'flex'}
           flexDirection={'row'}
           justifyContent={'space-between'}
           alignItems={'center'}
-          mb={2}
         >
           <Box
             display={'flex'}
@@ -284,8 +284,8 @@ export default function Portfolio() {
                 src={
                   'https://w7.pngwing.com/pngs/268/1013/png-transparent-ethereum-eth-hd-logo-thumbnail.png'
                 }
-                height="30px"
-                width="30px"
+                height="25px"
+                width="25px"
                 style={{ borderRadius: '50%' }}
               />
             </Box>
@@ -293,51 +293,43 @@ export default function Portfolio() {
               ml={1}
               display={'flex'}
               flexDirection={'column'}
-              justifyContent={'flex-start'}
+              justifyContent={'center'}
               alignItems={'flex-start'}
             >
               <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
-                ETH
+                DCA for $100
               </Typography>
               <Typography
                 variant="caption"
                 fontSize={12}
-                fontWeight={300}
-                color={'#757575'}
+                fontWeight={400}
+                color={'#272727'}
                 textAlign={'center'}
               >
-                Ethereum
+                7 orders
               </Typography>
             </Box>
           </Box>
 
-          <Box>
-            <Box
-              ml={1}
-              display={'flex'}
-              flexDirection={'column'}
-              justifyContent={'center'}
-              alignItems={'flex-end'}
+          <Box
+            ml={1}
+            display={'flex'}
+            flexDirection={'column'}
+            justifyContent={'center'}
+            alignItems={'flex-end'}
+          >
+            <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
+              $10 USDT
+            </Typography>
+            <Typography
+              variant="caption"
+              fontSize={10}
+              fontWeight={400}
+              color={'#272727'}
+              textAlign={'center'}
             >
-              <Typography
-                variant="body1"
-                fontSize={15}
-                fontWeight={600}
-                color={'#272727'}
-                textAlign={'center'}
-              >
-                0.25
-              </Typography>
-              <Typography
-                variant="caption"
-                fontSize={10}
-                fontWeight={300}
-                color={'#757575'}
-                textAlign={'center'}
-              >
-                $500
-              </Typography>
-            </Box>
+              0.0032 ETH
+            </Typography>
           </Box>
         </Box>
       </Box>
