@@ -118,6 +118,7 @@ const RelayerKitDemo = () => {
                 chainId={chainId}
                 setTransactionHash={setTransactionHash}
                 transactionHash={transactionHash}
+                handleSuccessUpdate={() => {}}
               />
             )}
 
@@ -134,7 +135,7 @@ const RelayerKitDemo = () => {
                   startIcon={<SendIcon />}
                   variant="contained"
                   disabled={!hasFunds}
-                  onClick={relayTransaction}
+                  // onClick={relayTransaction}
                 >
                   Send Transaction
                 </Button>

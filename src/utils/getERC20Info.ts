@@ -39,6 +39,7 @@ export const getERC20Allowance = async (
     return undefined
   }
 
+  // console.log('safe test allowance ', { erc20Address, accountAddress, spender })
   const contract = new ethers.Contract(erc20Address, erc20ABI, provider)
 
   const allowance = await contract.allowance(accountAddress, spender)

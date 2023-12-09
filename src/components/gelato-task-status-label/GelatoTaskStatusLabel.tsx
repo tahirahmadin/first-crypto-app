@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { Theme } from '@mui/material'
 import Box from '@mui/material/Box'
@@ -20,6 +20,7 @@ type GelatoTaskStatusLabelProps = {
   chainId: string
   transactionHash?: string
   setTransactionHash: React.Dispatch<React.SetStateAction<string>>
+  handleSuccessUpdate: () => void
 }
 
 const pollingTime = 4_000 // 4 seconds of polling time to update the Gelato task status
@@ -29,7 +30,8 @@ const GelatoTaskStatusLabel = ({
   gelatoTaskId,
   chainId,
   transactionHash,
-  setTransactionHash
+  setTransactionHash,
+  handleSuccessUpdate
 }: GelatoTaskStatusLabelProps) => {
   const { accountAbstractionKit } = useAccountAbstraction()
   const fetchGelatoTaskInfo = useCallback(async () => {
@@ -50,6 +52,9 @@ const GelatoTaskStatusLabel = ({
   const isLoading = !isCancelled && !isSuccess
 
   useEffect(() => {
+    if (gelatoTaskInfo?.taskState === 'ExecSuccess') {
+      handleSuccessUpdate()
+    }
     if (gelatoTaskInfo?.transactionHash) {
       setTransactionHash(gelatoTaskInfo.transactionHash)
     }

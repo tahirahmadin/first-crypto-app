@@ -21,6 +21,7 @@ import { SafeFactory } from '@safe-global/protocol-kit'
 import { ERC20ABI } from './abi'
 import FirstCryptoABI from '../constants/abis/firstCrypto.json'
 import { FIRST_CRYPTO, TOKENS } from 'src/constants/addresses'
+import { BN, toWei } from 'src/utils/unitConverter'
 
 type accountAbstractionContextValue = {
   ownerAddress?: string
@@ -40,7 +41,13 @@ type accountAbstractionContextValue = {
   setSafeSelected: React.Dispatch<React.SetStateAction<string>>
   setTokenAddress: React.Dispatch<React.SetStateAction<string>>
   isRelayerLoading: boolean
-  relayTransaction: () => Promise<void>
+  relayTransaction: (
+    amount: string,
+    steps: number,
+    fromToken: string,
+    toToken?: string
+  ) => Promise<void>
+  approveRelayTransaction: (amount: string, token: string, spender: string) => Promise<void>
   gelatoTaskId?: string
   openStripeWidget: () => Promise<void>
   closeStripeWidget: () => Promise<void>
@@ -54,7 +61,13 @@ const initialState = {
   isAuthenticated: false,
   loginWeb3Auth: () => {},
   logoutWeb3Auth: () => {},
-  relayTransaction: async () => {},
+  relayTransaction: async (
+    amount: string,
+    steps: number,
+    fromToken: string,
+    toToken?: string
+  ) => {},
+  approveRelayTransaction: async (amount: string, token: string, spender: string) => {},
   setChainId: () => {},
   setSafeSelected: () => {},
   setTokenAddress: () => {},
@@ -96,9 +109,9 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
   // chain selected
   const [chainId, setChainId] = useState<string>(() => {
-    if (isMoneriumRedirect()) {
-      return '0x5'
-    }
+    // if (isMoneriumRedirect()) {
+    //   return '0x5'
+    // }
 
     return initialChain.id
   })
@@ -494,27 +507,82 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     return response
   }
 
-  const relayTransaction = async () => {
+  const relayTransaction = async (
+    amount: string,
+    steps: number,
+    fromToken: string,
+    toToken?: string
+  ) => {
     if (web3Provider) {
       setIsRelayerLoading(true)
 
       const contractAddress = FIRST_CRYPTO[5] //'0x78ccc7e50c7fda32CdbAa75D60EccB182cFC45C6'
-      const inputToken = TOKENS.USDC[5] //'0xBD4B78B3968922e8A53F1d845eB3a128Adc2aA12'
-      const inputAmount = '10000000'
+      const inputToken = fromToken //TOKENS.USDC[5] //'0xBD4B78B3968922e8A53F1d845eB3a128Adc2aA12'
+      const inputAmount = toWei(BN(amount).multipliedBy(steps).toString(), 6) //'10000000'
 
-      const allowance = await getERC20Allowance(
-        inputToken,
-        web3Provider,
-        safeSelected,
-        contractAddress
-      )
+      const contractInterface = new ethers.Interface(FirstCryptoABI)
 
-      console.log('allowance ', allowance)
-      // const response = await transferTest()
+      const dumpSafeTransafer: MetaTransactionData[] = [
+        {
+          to: contractAddress,
+          data: contractInterface.encodeFunctionData('startStrategy', [
+            inputToken,
+            inputAmount,
+            steps
+          ]),
+          value: ethers.parseUnits('0', 'ether').toString(),
+          operation: 0 // OperationType.Call,
+        }
+      ]
+
+      const options: MetaTransactionOptions = {
+        isSponsored: false,
+        gasLimit: '600000', // in this alfa version we need to manually set the gas limit
+        gasToken: tokenAddress
+      }
+
+      const response = (await accountAbstractionKit?.relayTransaction(
+        dumpSafeTransafer,
+        options
+      )) as GelatoRelayResponse
 
       setIsRelayerLoading(false)
-      // console.log(response)
-      // setGelatoTaskId(response?.taskId)
+      console.log(response)
+      setGelatoTaskId(response?.taskId)
+    }
+  }
+
+  const approveRelayTransaction = async (amount: string, token: string, spender: string) => {
+    if (web3Provider) {
+      setIsRelayerLoading(true)
+
+      const erc20Interface = new ethers.Interface(ERC20ABI)
+      const inputToken = token //TOKENS.USDC[5]
+      // const spender =  spender //FIRST_CRYPTO[5]
+
+      const dumpSafeTransafer: MetaTransactionData[] = [
+        {
+          to: inputToken,
+          data: erc20Interface.encodeFunctionData('approve', [spender, amount]),
+          value: ethers.parseUnits('0', 'ether').toString(),
+          operation: 0 // OperationType.Call,
+        }
+      ]
+
+      const options: MetaTransactionOptions = {
+        isSponsored: false,
+        gasLimit: '600000', // in this alfa version we need to manually set the gas limit
+        gasToken: tokenAddress
+      }
+
+      const response = (await accountAbstractionKit?.relayTransaction(
+        dumpSafeTransafer,
+        options
+      )) as GelatoRelayResponse
+
+      setIsRelayerLoading(false)
+      console.log(response)
+      setGelatoTaskId(response?.taskId)
     }
   }
 
@@ -606,6 +674,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
     isRelayerLoading,
     relayTransaction,
+    approveRelayTransaction,
     gelatoTaskId,
 
     openStripeWidget,

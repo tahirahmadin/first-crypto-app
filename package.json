@@ -23,6 +23,7 @@
     "@yudiel/react-qr-scanner": "^1.2.4",
     "apexcharts": "^3.44.2",
     "axios": "^1.6.2",
+    "bignumber.js": "^9.1.2",
     "ethers": "^6.9.0",
     "protobufjs": "^7.2.5",
     "react": "^18.2.0",

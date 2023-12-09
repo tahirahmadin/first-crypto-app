@@ -9,6 +9,7 @@ import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 const ChainSelector = () => {
   const { chain, setChainId } = useAccountAbstraction()
 
+  console.log('safe test selected chain ', chain)
   return (
     <div>
       <FormControl fullWidth sx={{ minWidth: '150px' }}>

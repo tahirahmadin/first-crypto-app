@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   Box,
   Button,
@@ -10,6 +10,12 @@ import {
   useTheme
 } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
+import { getERC20Allowance } from 'src/utils/getERC20Info'
+import { FIRST_CRYPTO, TOKENS } from 'src/constants/addresses'
+import { BN, toWei } from 'src/utils/unitConverter'
+import GelatoTaskStatusLabel from 'src/components/gelato-task-status-label/GelatoTaskStatusLabel'
+import SafeInfo from 'src/components/safe-info/SafeInfo'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -111,217 +117,314 @@ const TradeComponent = () => {
   const [stakeCase, setStakeCase] = useState(0)
   const [approveCase, setApproveCase] = useState(0)
   const [refetch, setRefetch] = useState(0)
-  const [isApproved, setIsApproved] = useState(false)
-  const [totalValue, setTotalValue] = useState(0)
+  const [allowanceAmount, setAllowance] = useState('0')
+  // const [isApproved, setIsApproved] = useState(false)
 
-  let accountSC = '0x87228Dd1eca832d14f4aB0CFb99c471195E7f6dB'
+  const [transactionHash, setTransactionHash] = useState('')
 
-  const handleApprove = async () => {}
+  // const [totalValue, setTotalValue] = useState(0)
+  // const [approved, setApproved] = useState(false)
 
-  const handleStake = async () => {}
+  const selectedInputToken = TOKENS.USDC[5]
+  const selectedContract = FIRST_CRYPTO[5]
+
+  const {
+    relayTransaction,
+    approveRelayTransaction,
+    web3Provider,
+    safeSelected,
+    isAuthenticated,
+    isRelayerLoading,
+    gelatoTaskId,
+    chainId,
+    loginWeb3Auth
+  } = useAccountAbstraction()
 
   useEffect(() => {
-    if (time && amount) {
-      setTotalValue(amount * time)
+    console.log('state test ', { isAuthenticated, safeSelected })
+  }, [isAuthenticated, safeSelected])
+
+  const handleLogin = async () => {
+    loginWeb3Auth()
+  }
+
+  const totalValue = useMemo(() => amount * time, [time, amount])
+
+  // Initial render and When success of tx
+  async function checkAllowance() {
+    const allowance = await getERC20Allowance(
+      selectedInputToken,
+      web3Provider,
+      safeSelected,
+      selectedContract
+    )
+
+    setAllowance(allowance?.toString())
+  }
+
+  const isApproved = useMemo(() => {
+    console.log('Allowance Value', allowanceAmount)
+    if (BN(allowanceAmount).gte(totalValue)) {
+      return true
+    } else {
+      return false
     }
-  }, [time, amount])
+  }, [allowanceAmount, totalValue])
+  useEffect(() => {
+    console.log('safe test allowance ', totalValue)
+
+    if (safeSelected) {
+      checkAllowance()
+    }
+  }, [safeSelected, refetch, isAuthenticated])
+
+  const handleApprove = async () => {
+    approveRelayTransaction('10000000000', selectedInputToken, selectedContract)
+  }
+
+  const handleStake = async () => {
+    relayTransaction(amount, time, selectedInputToken)
+  }
+  const handleSuccessUpdate = async () => {
+    console.log('transaction test success')
+    setRefetch(refetch + 1)
+  }
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="flex-start"
-      paddingLeft="100px"
-      maxWidth={500}
-    >
-      <Box display={'flex'} justifyContent={'flex-start'} alignItems={'center'} mb={1}>
-        <Typography
-          fontSize={12}
-          fontWeight={600}
-          color={screenCase === 0 ? '#f9f9f9' : '#bdbdbd'}
-          textAlign={'center'}
-          ml={1}
-        >
-          Step 1: Login
-        </Typography>
+    <Box>
+      {screenCase === 0 && 'Show login button'}
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="flex-start"
+        paddingLeft="100px"
+        maxWidth={500}
+      >
+        <Box display={'flex'} justifyContent={'flex-start'} alignItems={'center'} mb={1}>
+          <Typography
+            fontSize={12}
+            fontWeight={600}
+            color={screenCase === 0 ? '#f9f9f9' : '#bdbdbd'}
+            textAlign={'center'}
+            ml={1}
+          >
+            Step 1: Login
+          </Typography>
 
-        <Typography
-          fontSize={12}
-          fontWeight={600}
-          color={screenCase === 1 ? '#f9f9f9' : '#bdbdbd'}
-          textAlign={'center'}
-          ml={1}
-        >
-          • Step 2: Fund the wallet
-        </Typography>
-        <Typography
-          fontSize={12}
-          fontWeight={600}
-          color={screenCase === 2 ? '#f9f9f9' : '#bdbdbd'}
-          textAlign={'center'}
-          ml={1}
-        >
-          • Step 3: Accumulate token
-        </Typography>
-      </Box>
-      <Box className={classes.card}>
-        <Typography
-          variant="body2"
-          fontSize={20}
-          fontWeight={700}
-          color={'#000000'}
-          textAlign={'center'}
-          my={1}
-        >
-          Invest
-        </Typography>
+          <Typography
+            fontSize={12}
+            fontWeight={600}
+            color={screenCase === 1 ? '#f9f9f9' : '#bdbdbd'}
+            textAlign={'center'}
+            ml={1}
+          >
+            • Step 2: Fund the wallet
+          </Typography>
+          <Typography
+            fontSize={12}
+            fontWeight={600}
+            color={screenCase === 2 ? '#f9f9f9' : '#bdbdbd'}
+            textAlign={'center'}
+            ml={1}
+          >
+            • Step 3: Accumulate token
+          </Typography>
+        </Box>
+        <Box className={classes.card}>
+          <Typography
+            variant="body2"
+            fontSize={20}
+            fontWeight={700}
+            color={'#000000'}
+            textAlign={'center'}
+            my={1}
+          >
+            Invest
+          </Typography>
 
-        <Box className={classes.summaryCard}>
-          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+          <Box className={classes.summaryCard}>
             <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-              <img
-                src="https://w7.pngwing.com/pngs/268/1013/png-transparent-ethereum-eth-hd-logo-thumbnail.png"
-                height="24px"
-                width="24px"
-                style={{ borderRadius: '50%' }}
-              />{' '}
+              <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                <img
+                  src="https://w7.pngwing.com/pngs/268/1013/png-transparent-ethereum-eth-hd-logo-thumbnail.png"
+                  height="24px"
+                  width="24px"
+                  style={{ borderRadius: '50%' }}
+                />{' '}
+                <Typography
+                  fontSize={12}
+                  fontWeight={600}
+                  color={'#f9f9f9'}
+                  textAlign={'center'}
+                  ml={1}
+                >
+                  Ethereum
+                </Typography>
+              </Box>
+
               <Typography
-                fontSize={12}
-                fontWeight={600}
-                color={'#f9f9f9'}
-                textAlign={'center'}
-                ml={1}
+                style={{ textTransform: 'capitalize' }}
+                variant="body2"
+                fontWeight={500}
+                fontSize={md ? 14 : 12}
+                color={'#ffffff'}
               >
-                Ethereum
+                Buy ${amount}/day
               </Typography>
             </Box>
-
-            <Typography
-              style={{ textTransform: 'capitalize' }}
-              variant="body2"
-              fontWeight={500}
-              fontSize={md ? 14 : 12}
-              color={'#ffffff'}
-            >
-              Buy ${amount}/day
-            </Typography>
+            <Box>
+              <Typography
+                variant="h1"
+                fontSize={44}
+                fontWeight={800}
+                color={'#f9f9f9'}
+                textAlign={'center'}
+                py={2}
+              >
+                ${totalValue}
+              </Typography>
+              <Typography
+                variant="body2"
+                fontSize={12}
+                fontWeight={400}
+                color={'#f9f9f9'}
+                textAlign={'center'}
+              >
+                Total investment
+              </Typography>
+            </Box>
           </Box>
-          <Box>
-            <Typography
-              variant="h1"
-              fontSize={44}
-              fontWeight={800}
-              color={'#f9f9f9'}
-              textAlign={'center'}
-              py={2}
-            >
-              ${totalValue}
+          <Typography
+            variant="body2"
+            fontSize={20}
+            fontWeight={700}
+            color={'#000000'}
+            textAlign={'center'}
+            mt={2}
+          >
+            Start Dollar Cost Averaging
+          </Typography>
+          <Box className={classes.inputCard} mt={2}>
+            <Typography fontSize={14} fontWeight={600} color={'#000000'} textAlign={'left'} mt={1}>
+              I want to buy Ethereum of:
             </Typography>
+            <Grid container spacing={1}>
+              <Grid item md={6} xs={6}>
+                <Box mt={1} className={classes.inputWrapper}>
+                  <Typography
+                    variant="subtitle2"
+                    textAlign={'left'}
+                    lineHeight={1}
+                    style={{ color: 'black', fontWeight: 600 }}
+                  >
+                    Amount per day:
+                  </Typography>
+                  <Input
+                    value={amount}
+                    onChange={(event) => setAmount(event.target.value)}
+                    fullWidth
+                    placeholder="Enter amount"
+                    disableUnderline
+                    style={{ fontSize: 14, fontWeight: 400, color: '#414141' }}
+                  />
+                </Box>
+              </Grid>
+              <Grid item md={6} xs={6}>
+                <Box mt={1} className={classes.inputWrapper}>
+                  <Typography
+                    variant="body2"
+                    textAlign={'left'}
+                    lineHeight={1}
+                    style={{ color: 'black', fontWeight: 600 }}
+                  >
+                    No of days:
+                  </Typography>
+                  <Input
+                    value={time}
+                    onChange={(event) => setTime(event.target.value)}
+                    fullWidth
+                    placeholder="Enter no of orders"
+                    disableUnderline
+                    style={{ fontSize: 14, fontWeight: 400, color: '#414141' }}
+                  />
+                </Box>
+              </Grid>
+            </Grid>
+
             <Typography
               variant="body2"
               fontSize={12}
               fontWeight={400}
-              color={'#f9f9f9'}
+              color={'#414141'}
               textAlign={'center'}
+              mt={2}
             >
-              Total investment
+              Beat inflation with Crypto!
             </Typography>
           </Box>
-        </Box>
-        <Typography
-          variant="body2"
-          fontSize={20}
-          fontWeight={700}
-          color={'#000000'}
-          textAlign={'center'}
-          mt={2}
-        >
-          Start Dollar Cost Averaging
-        </Typography>
-        <Box className={classes.inputCard} mt={2}>
-          <Typography fontSize={14} fontWeight={600} color={'#000000'} textAlign={'left'} mt={1}>
-            I want to buy Ethereum of:
-          </Typography>
-          <Grid container spacing={1}>
-            <Grid item md={6} xs={6}>
-              <Box mt={1} className={classes.inputWrapper}>
-                <Typography
-                  variant="subtitle2"
-                  textAlign={'left'}
-                  lineHeight={1}
-                  style={{ color: 'black', fontWeight: 600 }}
-                >
-                  Amount per day:
-                </Typography>
-                <Input
-                  value={amount}
-                  onChange={(event) => setAmount(event.target.value)}
-                  fullWidth
-                  placeholder="Enter amount"
-                  disableUnderline
-                  style={{ fontSize: 14, fontWeight: 400, color: '#414141' }}
-                />
-              </Box>
-            </Grid>
-            <Grid item md={6} xs={6}>
-              <Box mt={1} className={classes.inputWrapper}>
-                <Typography
-                  variant="body2"
-                  textAlign={'left'}
-                  lineHeight={1}
-                  style={{ color: 'black', fontWeight: 600 }}
-                >
-                  No of days:
-                </Typography>
-                <Input
-                  value={time}
-                  onChange={(event) => setTime(event.target.value)}
-                  fullWidth
-                  placeholder="Enter no of orders"
-                  disableUnderline
-                  style={{ fontSize: 14, fontWeight: 400, color: '#414141' }}
-                />
-              </Box>
-            </Grid>
-          </Grid>
 
-          <Typography
-            variant="body2"
-            fontSize={12}
-            fontWeight={400}
-            color={'#414141'}
-            textAlign={'center'}
-            mt={2}
-          >
-            Beat inflation with Crypto!
-          </Typography>
-        </Box>
-
-        <Button
-          style={{
-            marginTop: 10,
-            backgroundColor: '#f7931a',
-            color: 'black',
-            textDecoration: 'none',
-            borderRadius: '0.5625rem',
-            width: '100%',
-            height: 44
-          }}
-          mt={2}
-          // disabled={!accountSC}
-          onClick={isApproved ? handleStake : handleApprove}
-        >
-          {isApproved ? 'Buy Now' : 'Approve Spending'}{' '}
-          {(approveCase > 0 || (stakeCase > 0 && stakeCase < 3)) && (
-            <CircularProgress
-              size={18}
+          {isAuthenticated ? (
+            <Button
               style={{
-                color: 'white',
-                marginLeft: 5
+                marginTop: 10,
+                backgroundColor: '#f7931a',
+                color: 'black',
+                textDecoration: 'none',
+                borderRadius: '0.5625rem',
+                width: '100%',
+                height: 44
               }}
+              mt={2}
+              // disabled={!accountSC}
+              onClick={isApproved ? handleStake : handleApprove}
+            >
+              {isApproved
+                ? isRelayerLoading
+                  ? 'Investing...'
+                  : 'Buy Now'
+                : isRelayerLoading
+                ? 'Approving...'
+                : 'Approve Spending'}{' '}
+              {(approveCase > 0 || (stakeCase > 0 && stakeCase < 3)) && (
+                <CircularProgress
+                  size={18}
+                  style={{
+                    color: 'white',
+                    marginLeft: 5
+                  }}
+                />
+              )}
+            </Button>
+          ) : (
+            <Button
+              style={{
+                marginTop: 10,
+                backgroundColor: '#f7931a',
+                color: 'black',
+                textDecoration: 'none',
+                borderRadius: '0.5625rem',
+                width: '100%',
+                height: 44
+              }}
+              mt={2}
+              // disabled={!accountSC}
+              onClick={handleLogin}
+            >
+              Login
+            </Button>
+          )}
+          {gelatoTaskId && (
+            <GelatoTaskStatusLabel
+              gelatoTaskId={gelatoTaskId}
+              chainId={5}
+              setTransactionHash={setTransactionHash}
+              transactionHash={transactionHash}
+              handleSuccessUpdate={handleSuccessUpdate}
             />
           )}
-        </Button>
+
+          {safeSelected && <SafeInfo safeAddress={safeSelected} chainId={chainId} />}
+        </Box>
       </Box>
     </Box>
   )
