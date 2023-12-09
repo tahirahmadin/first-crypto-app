@@ -263,13 +263,18 @@ export default function ScanAndPay() {
   }
 
   const handleTransferFunds = async () => {
+    console.log('safeSelected')
+    console.log(safeSelected)
     await sendMessage(
-      '0x5e6795934ad8Ac05fEb01b1EfD9A5d333bf25a33',
-      '0xd49c810a3cDc76075FA328041353adc5521B8D93',
+      safeSelected ? safeSelected : '0x5e6795934ad8Ac05fEb01b1EfD9A5d333bf25a33',
+      UPI_TO_ADDRESS[scannedUPI]
+        ? UPI_TO_ADDRESS[scannedUPI]
+        : '0xd49c810a3cDc76075FA328041353adc5521B8D93',
       amount.toString()
     )
 
     setScreenCase(0)
+    setEnableScan(false)
     // if (amount && safeSelected && scannedUPI && isAuthenticated) {
     //   if (UPI_TO_ADDRESS[scannedUPI]) {
     //     console.log('hitting1')
