@@ -14,11 +14,13 @@ import usePolling from 'src/hooks/usePolling'
 import Chain from 'src/models/chain'
 import { ERC20Token } from 'src/models/erc20token'
 import getChain from 'src/utils/getChain'
-import { getERC20Info } from 'src/utils/getERC20Info'
+import { getERC20Allowance, getERC20Info } from 'src/utils/getERC20Info'
 import getMoneriumInfo, { MoneriumInfo } from 'src/utils/getMoneriumInfo'
 import isMoneriumRedirect from 'src/utils/isMoneriumRedirect'
 import { SafeFactory } from '@safe-global/protocol-kit'
 import { ERC20ABI } from './abi'
+import FirstCryptoABI from '../constants/abis/firstCrypto.json'
+import { FIRST_CRYPTO, TOKENS } from 'src/constants/addresses'
 
 type accountAbstractionContextValue = {
   ownerAddress?: string
@@ -407,15 +409,112 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     return response
   }
 
+  // const allowance = async (): Promise<string | undefined> => {
+  //   let response
+  //   try {
+  //     const erc20Interface = new ethers.Interface(ERC20ABI)
+  //     const inputToken = TOKENS.USDC[5]
+  //     const spender = FIRST_CRYPTO[5]
+  //     const dumpSafeTransafer: MetaTransactionData[] = [
+  //       {
+  //         to: inputToken,
+  //         data: erc20Interface.encodeFunctionData('approve', [spender, '10000000']),
+  //         value: ethers.parseUnits('0', 'ether').toString(),
+  //         operation: 0 // OperationType.Call,
+  //       }
+  //     ]
+
+  //   } catch (error) {
+  //     console.log('transferTest failed ', error)
+  //   }
+  //   return response
+  // }
+
+  const approveTokens = async (): Promise<GelatoRelayResponse | undefined> => {
+    let response
+    try {
+      const erc20Interface = new ethers.Interface(ERC20ABI)
+      const inputToken = TOKENS.USDC[5]
+      const spender = FIRST_CRYPTO[5]
+      const dumpSafeTransafer: MetaTransactionData[] = [
+        {
+          to: inputToken,
+          data: erc20Interface.encodeFunctionData('approve', [spender, '10000000']),
+          value: ethers.parseUnits('0', 'ether').toString(),
+          operation: 0 // OperationType.Call,
+        }
+      ]
+
+      const options: MetaTransactionOptions = {
+        isSponsored: false,
+        gasLimit: '600000', // in this alfa version we need to manually set the gas limit
+        gasToken: tokenAddress
+      }
+
+      response = (await accountAbstractionKit?.relayTransaction(
+        dumpSafeTransafer,
+        options
+      )) as GelatoRelayResponse
+    } catch (error) {
+      console.log('transferTest failed ', error)
+    }
+    return response
+  }
+
+  const startStrategy = async (): Promise<GelatoRelayResponse | undefined> => {
+    let response
+    try {
+      const contractInterface = new ethers.Interface(FirstCryptoABI)
+
+      const contractAddress = FIRST_CRYPTO[5] //'0x78ccc7e50c7fda32CdbAa75D60EccB182cFC45C6'
+      const inputToken = TOKENS.USDC[5] //'0xBD4B78B3968922e8A53F1d845eB3a128Adc2aA12'
+
+      const dumpSafeTransafer: MetaTransactionData[] = [
+        {
+          to: contractAddress,
+          data: contractInterface.encodeFunctionData('startStrategy', [inputToken, '10000000', 5]),
+          value: ethers.parseUnits('0', 'ether').toString(),
+          operation: 0 // OperationType.Call,
+        }
+      ]
+
+      const options: MetaTransactionOptions = {
+        isSponsored: false,
+        gasLimit: '600000', // in this alfa version we need to manually set the gas limit
+        gasToken: tokenAddress
+      }
+
+      response = (await accountAbstractionKit?.relayTransaction(
+        dumpSafeTransafer,
+        options
+      )) as GelatoRelayResponse
+    } catch (error) {
+      console.log('transferTest failed ', error)
+    }
+    return response
+  }
+
   const relayTransaction = async () => {
     if (web3Provider) {
       setIsRelayerLoading(true)
 
-      const response = await transferTest()
+      const contractAddress = FIRST_CRYPTO[5] //'0x78ccc7e50c7fda32CdbAa75D60EccB182cFC45C6'
+      const inputToken = TOKENS.USDC[5] //'0xBD4B78B3968922e8A53F1d845eB3a128Adc2aA12'
+      const inputAmount = '10000000'
+
+      const allowance = await getERC20Allowance(
+        inputToken,
+        web3Provider,
+        safeSelected,
+        contractAddress
+      )
+
+      console.log('allowance ', allowance)
+      // const response = await transferTest()
 
       setIsRelayerLoading(false)
-      console.log(response)
-      setGelatoTaskId(response?.taskId)
+      // console.log(response)
+      // setGelatoTaskId(response?.taskId)
     }
   }
 
