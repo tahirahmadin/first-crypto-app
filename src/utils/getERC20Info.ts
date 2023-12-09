@@ -28,3 +28,20 @@ export const getERC20Info = async (
 
   return { address: erc20Address, balance, decimals, symbol }
 }
+
+export const getERC20Allowance = async (
+  erc20Address: string,
+  provider: ethers.BrowserProvider,
+  accountAddress?: string,
+  spender?: string
+): Promise<ERC20Token | undefined> => {
+  if (erc20Address === ethers.ZeroAddress) {
+    return undefined
+  }
+
+  const contract = new ethers.Contract(erc20Address, erc20ABI, provider)
+
+  const allowance = await contract.allowance(accountAddress, spender)
+
+  return allowance
+}
