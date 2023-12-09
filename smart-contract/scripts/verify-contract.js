@@ -1,14 +1,16 @@
-
 const hre = require('hardhat')
 
 // deploy and verify rsi contract
 async function main() {
-
-  const usdc = '0xBD4B78B3968922e8A53F1d845eB3a128Adc2aA12';
-  const deployParams = [usdc];
+  const deployParams = []
 
   // verify rsi contract
-  const deployedAddress = '0x78ccc7e50c7fda32CdbAa75D60EccB182cFC45C6'
+
+  // latest deployed
+  // goerli : 0x8d5Ff28faDe46A2f41D38cC1854E11c958211792
+  // scrollsepolia:   0x46b2b0eEfd25251f38f289e7a5F52D282D411FBD
+  // arbitrum-goerli 421613 :0xF307473cb72BDcB6aDbeFDd82199ba316dA4F51e
+  const deployedAddress = '0x8d5Ff28faDe46A2f41D38cC1854E11c958211792'
 
   await hre.run('verify:verify', {
     address: deployedAddress,

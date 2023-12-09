@@ -11,6 +11,8 @@ import {
   getTokenDetailsByAddresses
 } from 'src/actions/serverActions'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
+import { getPositionInfo } from 'src/utils/getUserPosition'
+import GelatoTaskStatusLabel from 'src/components/gelato-task-status-label/GelatoTaskStatusLabel'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -122,17 +124,21 @@ export default function Portfolio() {
   const theme = useTheme()
   const [totalPortfolio, setTotalPortfolio] = useState(12000)
   const [showUPI, setShowUPI] = useState(false)
-  const [upi, setUPI] = useState('tahirahmad.in@axl')
-  const [activeTokens, setActiveTokens] = useState(null)
+  const [upi, setUPI] = useState('youname@bankId')
+  const [activeTokens, setActiveTokens] = useState('tahirahmad@ybl')
+  const [loading, setLoading] = useState(false)
 
-  const { safeSelected } = useAccountAbstraction()
-  let accountSC = safeSelected
+  const { safeSelected, updateUpiTransaction, isRelayerLoading, gelatoTaskId } =
+    useAccountAbstraction()
+  const [transactionHash, setTransactionHash] = useState('')
+
+  let accountSC = '0x87228Dd1eca832d14f4aB0CFb99c471195E7f6dB'
 
   // Fetch Balances of user
   useEffect(() => {
-    if (accountSC) {
+    if (safeSelected) {
       async function asyncFn() {
-        let balancesData = await getTokenBalancesOfWalletAddress(accountSC)
+        let balancesData = await getTokenBalancesOfWalletAddress(safeSelected)
 
         if (balancesData) {
           const filteredData = Object.keys(balancesData)
@@ -159,10 +165,10 @@ export default function Portfolio() {
 
       asyncFn()
     }
-  }, [accountSC])
+  }, [safeSelected])
 
   const copyToClip = async () => {
-    await navigator.clipboard.writeText(accountSC)
+    await navigator.clipboard.writeText(safeSelected)
     alert('Wallet address is copied')
   }
 
@@ -207,6 +213,15 @@ export default function Portfolio() {
         data: [10, 12, 17, 19, 33, 28, 24, 44, 48]
       }
     ]
+  const handleUpiUpdate = async () => {
+    await updateUpiTransaction(upi)
+    setLoading(true)
+  }
+
+  const handleSuccessUpdate = () => {
+    setLoading(false)
+    setShowUPI(false)
+    // refresh upi
   }
 
   return (
@@ -241,8 +256,8 @@ export default function Portfolio() {
               textAlign={'center'}
               alignItems={'center'}
             >
-              {accountSC.slice(0, 8)}
-              {'... '} {accountSC.slice(-8)}
+              {safeSelected?.slice(0, 8)}
+              {'... '} {safeSelected?.slice(-8)}
               <CopyAll onClick={copyToClip} style={{ cursor: 'pointer' }} />
             </Typography>
             <Typography
@@ -344,21 +359,33 @@ export default function Portfolio() {
               disableUnderline
               style={{ fontSize: 14, fontWeight: 400, color: '#f9f9f9' }}
             />
-            <Button
-              style={{
-                marginTop: 10,
-                backgroundColor: '#f7931a',
-                color: 'black',
-                textDecoration: 'none',
-                borderRadius: '0.5625rem',
-                width: 'fit-content',
-                height: 44
-              }}
-              mt={2}
-              onClick={null}
-            >
-              Update UPI
-            </Button>
+            {!loading && (
+              <Button
+                style={{
+                  marginTop: 10,
+                  backgroundColor: '#f7931a',
+                  color: 'black',
+                  textDecoration: 'none',
+                  borderRadius: '0.5625rem',
+                  width: '100%',
+                  height: 44
+                }}
+                mt={2}
+                onClick={handleUpiUpdate}
+              >
+                Update UPI
+              </Button>
+            )}
+
+            {loading && gelatoTaskId && (
+              <GelatoTaskStatusLabel
+                gelatoTaskId={gelatoTaskId}
+                chainId={5}
+                setTransactionHash={setTransactionHash}
+                transactionHash={transactionHash}
+                handleSuccessUpdate={handleSuccessUpdate}
+              />
+            )}
           </Box>
         </Box>
       )}

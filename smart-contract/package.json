@@ -5,6 +5,7 @@
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
     "deploy-contract": "hardhat run --network goerli scripts/deploy-contract.js",
+    "deploy-mock": "hardhat run --network arbitrum_goerli scripts/deployMocks.js",
     "verify-contract": "hardhat run --network goerli scripts/verify-contract.js",
     "clean": "hardhat clean",
     "solhint": "./node_modules/.bin/solhint -f table contracts/**/*.sol",

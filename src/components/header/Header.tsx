@@ -12,6 +12,7 @@ import FirstCryptoLogo from 'src/assets/CryptoFirst.png'
 import { useTheme } from 'src/store/themeContext'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import ChainSelector from '../chain-selector/ChainSelector'
+import SafeInfo from '../safe-info/SafeInfo'
 
 type HeaderProps = {
   setStep: (newStep: number) => void
@@ -20,7 +21,7 @@ type HeaderProps = {
 function Header({ setStep }: HeaderProps) {
   const { switchThemeMode, isDarkTheme } = useTheme()
 
-  const { chain } = useAccountAbstraction()
+  const { chain, safeSelected, chainId } = useAccountAbstraction()
 
   return (
     <AppBar position="static">
@@ -45,7 +46,8 @@ function Header({ setStep }: HeaderProps) {
             {chain && (
               <Box display="flex" justifyContent="flex-end" alignItems="center">
                 {/* <ChainLabel chain={chain} /> */}
-                <ChainSelector />
+                {/* <ChainSelector /> */}
+                {safeSelected && <SafeInfo safeAddress={safeSelected} chainId={chainId} />}
               </Box>
             )}
           </Box>

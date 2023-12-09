@@ -15,7 +15,6 @@ const { ethers } = require('hardhat')
 // upi update functions
 // order status update functions
 
-
 describe('Start order ', function () {
   it('Initialize ', async function () {
     const { accumulationContract, owner } = await loadFixture(deployFixture)
@@ -44,6 +43,10 @@ describe('Start order ', function () {
     const userOrder = await accumulationContract.orders(1)
     const count = await accumulationContract.ordersCount()
 
+    const userDeposits = await accumulationContract
+      .connect(addr1)
+      .getUserDepositBalance(addr1.address, usdtContract.address)
+    console.log('userDeposits ', userDeposits)
     const ownerUsdtBalAfter = await usdtContract.balanceOf(owner.address)
 
     console.log('owner balance after  ', fromWei(ownerUsdtBalAfter.toString()))
@@ -55,31 +58,31 @@ describe('Start order ', function () {
     console.log('order created ', userOrder)
     console.log('total orders ', count)
 
-    const userOrders = await accumulationContract.getUserOrders(addr1.address, usdtContract.address);
+    const userOrders = await accumulationContract.getUserOrders(addr1.address, usdtContract.address)
     console.log('user order ', userOrders)
-    const userOrders2 = await accumulationContract.getUserOrders(owner.address, usdtContract.address );
-    console.log('user order2 ', userOrders2);
+    const userOrders2 = await accumulationContract.getUserOrders(
+      owner.address,
+      usdtContract.address
+    )
+    console.log('user order2 ', userOrders2)
 
-  // Get the current block number
+    // Get the current block number
 
-    const blockNumber = await ethers.provider.getBlockNumber();
+    const blockNumber = await ethers.provider.getBlockNumber()
 
     // Get the block information
-    const block = await ethers.provider.getBlock(blockNumber);
+    const block = await ethers.provider.getBlock(blockNumber)
 
     // Retrieve the timestamp from the block
-    const timestamp = block.timestamp;
-    console.log('timestamp ', timestamp);
-    const filteredOrders = await accumulationContract.getPendingOrders(timestamp);
+    const timestamp = block.timestamp
+    console.log('timestamp ', timestamp)
+    const filteredOrders = await accumulationContract.getPendingOrders(timestamp)
     console.log('filtered orders ', filteredOrders)
-
-
   })
 
   it('multiple accounts can start strategy', async function () {
-    const { sleepContract, owner, addr1,addr2,addr3,addr4 ,   accumulationContract, usdtContract } = await loadFixture(
-      deployFixture
-    )
+    const { sleepContract, owner, addr1, addr2, addr3, addr4, accumulationContract, usdtContract } =
+      await loadFixture(deployFixture)
 
     await usdtContract.transfer(addr1.address, toWei('1000'))
     await usdtContract.connect(addr1).approve(accumulationContract.address, toWei('1000'))
@@ -93,13 +96,13 @@ describe('Start order ', function () {
     const trx = await accumulationContract
       .connect(addr1)
       .startStrategy(sleepContract.address, toWei('10'), 5)
-      const trx2 = await accumulationContract
+    const trx2 = await accumulationContract
       .connect(addr2)
       .startStrategy(sleepContract.address, toWei('10'), 5)
-      const trx3 = await accumulationContract
+    const trx3 = await accumulationContract
       .connect(addr3)
       .startStrategy(sleepContract.address, toWei('10'), 5)
-      const trx4 = await accumulationContract
+    const trx4 = await accumulationContract
       .connect(addr4)
       .startStrategy(sleepContract.address, toWei('10'), 5)
     const userOrder = await accumulationContract.orders(1)
@@ -116,31 +119,31 @@ describe('Start order ', function () {
     console.log('order created ', userOrder)
     console.log('total orders ', count)
 
-    const userOrders = await accumulationContract.getUserOrders(addr1.address, usdtContract.address);
+    const userOrders = await accumulationContract.getUserOrders(addr1.address, usdtContract.address)
     console.log('user order ', userOrders)
-    const userOrders2 = await accumulationContract.getUserOrders(owner.address, usdtContract.address );
-    console.log('user order2 ', userOrders2);
+    const userOrders2 = await accumulationContract.getUserOrders(
+      owner.address,
+      usdtContract.address
+    )
+    console.log('user order2 ', userOrders2)
 
-  // Get the current block number
+    // Get the current block number
 
-    const blockNumber = await ethers.provider.getBlockNumber();
+    const blockNumber = await ethers.provider.getBlockNumber()
 
     // Get the block information
-    const block = await ethers.provider.getBlock(blockNumber);
+    const block = await ethers.provider.getBlock(blockNumber)
 
     // Retrieve the timestamp from the block
-    const timestamp = block.timestamp;
-    console.log('timestamp ', timestamp);
-    const filteredOrders = await accumulationContract.getPendingOrders(timestamp);
+    const timestamp = block.timestamp
+    console.log('timestamp ', timestamp)
+    const filteredOrders = await accumulationContract.getPendingOrders(timestamp)
     console.log('filtered orders ', filteredOrders)
-
-
   })
 
   it('manager can update order status in batch', async function () {
-    const { sleepContract, owner, addr1,addr2,addr3,addr4 ,   accumulationContract, usdtContract } = await loadFixture(
-      deployFixture
-    )
+    const { sleepContract, owner, addr1, addr2, addr3, addr4, accumulationContract, usdtContract } =
+      await loadFixture(deployFixture)
 
     await usdtContract.transfer(addr1.address, toWei('1000'))
     await usdtContract.connect(addr1).approve(accumulationContract.address, toWei('1000'))
@@ -154,60 +157,46 @@ describe('Start order ', function () {
     const trx = await accumulationContract
       .connect(addr1)
       .startStrategy(sleepContract.address, toWei('10'), 5)
-      const trx2 = await accumulationContract
+    const trx2 = await accumulationContract
       .connect(addr2)
       .startStrategy(sleepContract.address, toWei('10'), 5)
-      const trx3 = await accumulationContract
+    const trx3 = await accumulationContract
       .connect(addr3)
       .startStrategy(sleepContract.address, toWei('10'), 5)
-      const trx4 = await accumulationContract
+    const trx4 = await accumulationContract
       .connect(addr4)
       .startStrategy(sleepContract.address, toWei('10'), 5)
     const userOrder = await accumulationContract.orders(1)
     const count = await accumulationContract.ordersCount()
 
-
     console.log('order created ', userOrder)
     console.log('total orders ', count)
 
-    const blockNumber = await ethers.provider.getBlockNumber();
+    const blockNumber = await ethers.provider.getBlockNumber()
 
     // Get the block information
-    const block = await ethers.provider.getBlock(blockNumber);
+    const block = await ethers.provider.getBlock(blockNumber)
 
     // Retrieve the timestamp from the block
-    const timestamp = block.timestamp;
-    console.log('timestamp ', timestamp);
-    const filteredOrders = await accumulationContract.getPendingOrders(timestamp);
+    const timestamp = block.timestamp
+    console.log('timestamp ', timestamp)
+    const filteredOrders = await accumulationContract.getPendingOrders(timestamp)
     console.log('filtered orders ', filteredOrders)
 
     // execute first 2 orders once
-   await accumulationContract
-    .connect(owner)
-    .updateOrderStatus([1,3])
+    await accumulationContract.connect(owner).updateOrderStatus([1, 3])
 
-    const filteredOrders2 = await accumulationContract.getPendingOrders(timestamp);
+    const filteredOrders2 = await accumulationContract.getPendingOrders(timestamp)
     console.log('filtered orders after update ', filteredOrders2)
 
+    // execute first 2 orders 4 times
+    await accumulationContract.connect(owner).updateOrderStatus([1, 3])
+    await accumulationContract.connect(owner).updateOrderStatus([1, 3])
+    await accumulationContract.connect(owner).updateOrderStatus([1, 3])
+    await accumulationContract.connect(owner).updateOrderStatus([1, 3])
 
-
-        // execute first 2 orders 4 times
-   await accumulationContract
-   .connect(owner)
-   .updateOrderStatus([1,3])
-   await accumulationContract
-   .connect(owner)
-   .updateOrderStatus([1,3])
-   await accumulationContract
-   .connect(owner)
-   .updateOrderStatus([1,3])
-   await accumulationContract
-   .connect(owner)
-   .updateOrderStatus([1,3])  
-
-   const filteredOrders3 = await accumulationContract.getPendingOrders(timestamp);
-   console.log('filtered orders after update ', filteredOrders3)
-
+    const filteredOrders3 = await accumulationContract.getPendingOrders(timestamp)
+    console.log('filtered orders after update ', filteredOrders3)
   })
 
   it('upi update functions', async function () {

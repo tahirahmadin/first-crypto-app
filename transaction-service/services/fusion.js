@@ -1,5 +1,5 @@
 const { default: Web3 } = require('web3')
-const { NETWORK_RPC, TOKENS } = require('../constants')
+const { NETWORK_RPC } = require('../constants')
 const {
   PrivateKeyProviderConnector,
   FusionSDK,
@@ -28,7 +28,7 @@ function fusionSdk(chainId) {
   // });
   const sdk = new FusionSDK({
     url: 'https://api.1inch.dev/fusion',
-    network: chainId,
+    network: NetworkEnum.POLYGON,
     blockchainProvider,
     authKey: process.env.FUSION_AUTH_KEY
   })
@@ -37,81 +37,107 @@ function fusionSdk(chainId) {
 }
 
 async function createFusionOrder(chainId, fromToken, toToken, amount) {
-  try {
-    const sdk = fusionSdk(chainId)
+  const sdk = fusionSdk(chainId)
 
-    const order = await sdk.placeOrder({
-      fromTokenAddress: fromToken, // WETH
-      toTokenAddress: toToken, // USDC
-      amount: amount, // 0.05 ETH
-      walletAddress: makerAddress,
-      preset: PresetEnum.fast
-    })
+  const order = await sdk.placeOrder({
+    fromTokenAddress: fromToken, // WETH
+    toTokenAddress: toToken, // USDC
+    amount: amount, // 0.05 ETH
+    walletAddress: makerAddress,
+    preset: PresetEnum.fast
+  })
 
-    return order
-  } catch (error) {
-    console.log('failed to create fusion order ', error)
-    return null
-  }
+  return order
 }
 
-async function createFusionOrder2(chainId, fromToken, toToken, amount) {
-  try {
-    const sdk = fusionSdk(chainId)
+async function createFusionOrderWithRetry(
+  chainId,
+  fromToken,
+  toToken,
+  amount,
+  maxRetries = 3,
+  delay = 5000
+) {
+  let retries = 0
 
-    const quote = await sdk.getQuote({
-      fromTokenAddress: fromToken,
-      toTokenAddress: toToken,
-      amount: amount
-    })
-
-    console.log('quote ', quote)
-    const quoteId = quote.quoteId
-
-    const salt = new AuctionSalt({
-      duration: 180,
-      auctionStartTime: 1673548149,
-      initialRateBump: 50000,
-      bankFee: '0'
-    })
-
-    const suffix = new AuctionSuffix({
-      points: [
-        {
-          coefficient: 20000,
-          delay: 12
-        }
-      ],
-      whitelist: [
-        {
-          address: makerAddress,
-          allowance: 0
-        }
-      ]
-    })
-
-    const order = new FusionOrder(
-      {
-        makerAsset: fromToken,
-        takerAsset: toToken,
-        makingAmount: amount,
-        takingAmount: quote.toTokenAmount,
-        maker: makerAddress
-      },
-      salt,
-      suffix,
-      {
-        postInteraction: '0x'
+  while (retries <= maxRetries) {
+    try {
+      const order = await createFusionOrder(chainId, fromToken, toToken, amount)
+      if (order) {
+        return order
       }
-    )
+    } catch (error) {
+      console.error(`Error creating Fusion order (Retry ${retries + 1}):`, error.message)
+    }
 
-    const orderBuild = order.build()
-    console.log('order build ', orderBuild)
-  } catch (error) {
-    console.log('failed to create fusion order ', error)
-    return null
+    // Retry after a delay (e.g., 5 seconds)
+    console.log(`Retrying in 5 seconds...`)
+    await new Promise((resolve) => setTimeout(resolve, delay))
+
+    retries++
   }
+
+  console.error(`Max retries reached. Could not create Fusion order.`)
+  return null
 }
+
+// async function buildFusionOrder(chainId, fromToken, toToken, amount) {
+//   try {
+//     const sdk = fusionSdk(chainId)
+
+//     const quote = await sdk.getQuote({
+//       fromTokenAddress: fromToken,
+//       toTokenAddress: toToken,
+//       amount: amount
+//     })
+
+//     console.log('quote ', quote)
+//     const quoteId = quote.quoteId
+
+//     const salt = new AuctionSalt({
+//       duration: 180,
+//       auctionStartTime: 1673548149,
+//       initialRateBump: 50000,
+//       bankFee: '0'
+//     })
+
+//     const suffix = new AuctionSuffix({
+//       points: [
+//         {
+//           coefficient: 20000,
+//           delay: 12
+//         }
+//       ],
+//       whitelist: [
+//         {
+//           address: makerAddress,
+//           allowance: 0
+//         }
+//       ]
+//     })
+
+//     const order = new FusionOrder(
+//       {
+//         makerAsset: fromToken,
+//         takerAsset: toToken,
+//         makingAmount: amount,
+//         takingAmount: quote.toTokenAmount,
+//         maker: makerAddress
+//       },
+//       salt,
+//       suffix,
+//       {
+//         postInteraction: '0x'
+//       }
+//     )
+
+//     const orderBuild = order.build()
+//     console.log('order build ', orderBuild)
+//   } catch (error) {
+//     console.log('failed to create fusion order ', error)
+//     return null
+//   }
+// }
 
 async function getOrderQuote(chainId, fromToken, toToken, amount) {
   try {
@@ -171,5 +197,5 @@ module.exports = {
   createFusionOrder,
   watchOrderStatus,
   getOrderQuote,
-  createFusionOrder2
+  createFusionOrderWithRetry
 }

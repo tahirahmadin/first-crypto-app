@@ -4,7 +4,7 @@ type callbackType<T> = () => Promise<T>
 
 type usePollingHookReturnValue<T> = T | undefined
 
-const DEFAULT_POLLING_TIME = 3_000 // 3 secs as default polling
+const DEFAULT_POLLING_TIME = 5_000 // 3 secs as default polling
 
 function usePolling<T>(
   callback: callbackType<T>,
