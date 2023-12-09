@@ -136,6 +136,8 @@ const TradeComponent = () => {
     isRelayerLoading,
     gelatoTaskId,
     chainId,
+    isSafeDeployed,
+    deploySafe,
     loginWeb3Auth
   } = useAccountAbstraction()
 
@@ -187,6 +189,10 @@ const TradeComponent = () => {
   const handleSuccessUpdate = async () => {
     console.log('transaction test success')
     setRefetch(refetch + 1)
+  }
+
+  const handleSafeDeploy = async () => {
+    deploySafe()
   }
 
   return (
@@ -241,7 +247,27 @@ const TradeComponent = () => {
           </Box>
         </Box>
       )}
-      {isAuthenticated && (
+      {isAuthenticated && !isSafeDeployed && (
+        <Box className={classes.card}>
+          <Button
+            style={{
+              marginTop: 10,
+              backgroundColor: '#f7931a',
+              color: 'black',
+              textDecoration: 'none',
+              borderRadius: '0.5625rem',
+              width: '100%',
+              height: 44
+            }}
+            mt={2}
+            // disabled={!accountSC}
+            onClick={handleSafeDeploy}
+          >
+            Create your first crypto dashboard
+          </Button>
+        </Box>
+      )}
+      {isAuthenticated && isSafeDeployed && (
         <Box display="flex" flexDirection="column" alignItems="flex-start" maxWidth={440}>
           {/* <Box display={'flex'} justifyContent={'flex-start'} alignItems={'center'} mb={1}>
             <Typography

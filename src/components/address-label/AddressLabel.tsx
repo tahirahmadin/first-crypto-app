@@ -30,7 +30,7 @@ const AddressLabel = ({
 
   return (
     <Stack direction="row" alignItems="center" justifyContent="center" component="span">
-      <Tooltip title={address}>
+      <Tooltip title={address} style={{ color: 'black', fontSize: 13 }}>
         <span>{addressLabel}</span>
       </Tooltip>
 

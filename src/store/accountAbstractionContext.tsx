@@ -41,6 +41,7 @@ type accountAbstractionContextValue = {
   setSafeSelected: React.Dispatch<React.SetStateAction<string>>
   setTokenAddress: React.Dispatch<React.SetStateAction<string>>
   isRelayerLoading: boolean
+  isSafeDeployed: boolean
   relayTransaction: (
     amount: string,
     steps: number,
@@ -49,6 +50,7 @@ type accountAbstractionContextValue = {
   ) => Promise<void>
   approveRelayTransaction: (amount: string, token: string, spender: string) => Promise<void>
   updateUpiTransaction: (upi: string) => Promise<void>
+  deploySafe: () => Promise<void>
   gelatoTaskId?: string
   openStripeWidget: () => Promise<void>
   closeStripeWidget: () => Promise<void>
@@ -70,6 +72,7 @@ const initialState = {
   ) => {},
   approveRelayTransaction: async (amount: string, token: string, spender: string) => {},
   updateUpiTransaction: async (upi: string) => {},
+  deploySafe: async () => {},
   setChainId: () => {},
   setSafeSelected: () => {},
   setTokenAddress: () => {},
@@ -78,6 +81,7 @@ const initialState = {
   tokenAddress: ethers.ZeroAddress,
   chainId: initialChain.id,
   isRelayerLoading: true,
+  isSafeDeployed: false,
   openStripeWidget: async () => {},
   closeStripeWidget: async () => {},
   startMoneriumFlow: async () => {},
@@ -341,6 +345,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
   // relay-kit implementation using Gelat
   const deploySafe = async () => {
+    console.log('safe deployed ', ownerAddress)
     try {
       if (!web3Provider) {
         return
@@ -353,8 +358,9 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       const safeVersion = '1.4.1'
       const safeFactory = await SafeFactory.create({ ethAdapter, safeVersion })
 
+      console.log('safe deployed ', ownerAddress)
       const safeAccountConfig: SafeAccountConfig = {
-        owners: ['0x81AE146Df51fDB932297374f9b0bD95f862A7885'],
+        owners: [ownerAddress],
         threshold: 1
         // to, // Optional
         // data, // Optional
@@ -367,7 +373,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
       const safeSdk = await safeFactory.deploySafe({ safeAccountConfig })
       console.log('safe test sdk deployed ', safeSdk)
     } catch (error) {
-      console.log('safe test failed to deploy sdk ', error)
+      console.log('safe deployed failed to deploy sdk ', error)
     }
   }
 
@@ -714,9 +720,11 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     setTokenAddress,
 
     isRelayerLoading,
+    isSafeDeployed,
     relayTransaction,
     approveRelayTransaction,
     updateUpiTransaction,
+    deploySafe,
     gelatoTaskId,
 
     openStripeWidget,

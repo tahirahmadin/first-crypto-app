@@ -13,6 +13,7 @@ import {
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { getPositionInfo } from 'src/utils/getUserPosition'
 import GelatoTaskStatusLabel from 'src/components/gelato-task-status-label/GelatoTaskStatusLabel'
+import AddressLabel from 'src/components/address-label/AddressLabel'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -149,7 +150,7 @@ export default function Portfolio() {
   const [activeTokens, setActiveTokens] = useState('tahirahmad@ybl')
   const [loading, setLoading] = useState(false)
 
-  const { safeSelected, updateUpiTransaction, isRelayerLoading, gelatoTaskId } =
+  const { safeSelected, updateUpiTransaction, isRelayerLoading, gelatoTaskId, ownerAddress } =
     useAccountAbstraction()
   const [transactionHash, setTransactionHash] = useState('')
 
@@ -268,7 +269,7 @@ export default function Portfolio() {
             justifyContent={'space-around'}
             alignItems={'flex-start'}
           >
-            <Typography
+            {/* <Typography
               variant="body2"
               fontSize={12}
               fontWeight={400}
@@ -279,7 +280,8 @@ export default function Portfolio() {
               {safeSelected?.slice(0, 8)}
               {'... '} {safeSelected?.slice(-8)}
               <CopyAll onClick={copyToClip} style={{ cursor: 'pointer' }} />
-            </Typography>
+            </Typography> */}
+            {ownerAddress && <AddressLabel address={ownerAddress} showBlockExplorerLink />}
             <Typography
               variant="h3"
               fontSize={32}
