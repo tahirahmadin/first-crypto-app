@@ -4,7 +4,11 @@ import { makeStyles } from '@mui/styles'
 import { Box, Button, IconButton, Input, Typography, useMediaQuery, useTheme } from '@mui/material'
 
 import { CopyAll } from '@mui/icons-material'
-import { getTokenBalancesOfWalletAddress } from 'src/actions/serverActions'
+import {
+  getSpotPriceOfTokensByAddresses,
+  getTokenBalancesOfWalletAddress,
+  getTokenDetailsByAddresses
+} from 'src/actions/serverActions'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -116,17 +120,33 @@ export default function Portfolio() {
   const theme = useTheme()
   const [showUPI, setShowUPI] = useState(false)
   const [upi, setUPI] = useState('tahirahmad@ybl')
+  const [activeTokens, setActiveTokens] = useState('tahirahmad@ybl')
   let accountSC = '0x87228Dd1eca832d14f4aB0CFb99c471195E7f6dB'
 
+  // Fetch Balances of user
   useEffect(() => {
     if (accountSC) {
       async function asyncFn() {
         let balancesData = await getTokenBalancesOfWalletAddress(accountSC)
-        console.log(balancesData)
-        // if (web3Data && web3Data.identity === null) {
-        //   return;
-        // }
-        // setSocialDataValues(web3Data);
+
+        if (balancesData) {
+          const filteredData = Object.keys(balancesData)
+            .filter((key) => parseInt(balancesData[key]) > 0)
+            .reduce((obj, key) => {
+              obj[key] = balancesData[key]
+
+              return obj
+            }, {})
+          let tempAddresses = Object.keys(filteredData)
+          console.log('tempAddresses')
+          console.log(tempAddresses)
+          let tokensData = await getTokenDetailsByAddresses(tempAddresses)
+          let pricesData = await getSpotPriceOfTokensByAddresses(tempAddresses)
+          console.log(tokensData)
+          console.log(pricesData)
+          setActiveTokens(filteredData)
+          console.log(filteredData)
+        }
       }
 
       asyncFn()
@@ -235,7 +255,7 @@ export default function Portfolio() {
             tahirahmad@ybl
           </Typography>
           <Typography
-            onClick={() => setShowUPI(true)}
+            onClick={() => setShowUPI(!showUPI)}
             variant="caption"
             fontSize={12}
             fontWeight={300}
@@ -243,45 +263,48 @@ export default function Portfolio() {
             textAlign={'center'}
             alignItems={'center'}
           >
-            Update UPI
+            {showUPI ? 'Hide UPI Update' : ' Update UPI'}
           </Typography>
         </Box>
       </Box>
-      <Box className={classes.summaryCard}>
-        <Box mt={1} className={classes.inputWrapper}>
-          <Typography
-            variant="subtitle2"
-            textAlign={'left'}
-            lineHeight={1}
-            style={{ color: 'black', fontWeight: 600 }}
-          >
-            Your UPI Id to receive crypto payments:
-          </Typography>
-          <Input
-            value={upi}
-            onChange={(event) => setUPI(event.target.value)}
-            fullWidth
-            placeholder="Enter your upi "
-            disableUnderline
-            style={{ fontSize: 14, fontWeight: 400, color: '#f9f9f9' }}
-          />
-          <Button
-            style={{
-              marginTop: 10,
-              backgroundColor: '#f7931a',
-              color: 'black',
-              textDecoration: 'none',
-              borderRadius: '0.5625rem',
-              width: '100%',
-              height: 44
-            }}
-            mt={2}
-            onClick={null}
-          >
-            Update UPI
-          </Button>
+      {showUPI && (
+        <Box className={classes.summaryCard}>
+          <Box mt={1} className={classes.inputWrapper}>
+            <Typography
+              variant="subtitle2"
+              textAlign={'left'}
+              lineHeight={1}
+              style={{ color: 'black', fontWeight: 600 }}
+            >
+              Your UPI Id to receive crypto payments:
+            </Typography>
+            <Input
+              value={upi}
+              onChange={(event) => setUPI(event.target.value)}
+              fullWidth
+              placeholder="Enter your upi "
+              disableUnderline
+              style={{ fontSize: 14, fontWeight: 400, color: '#f9f9f9' }}
+            />
+            <Button
+              style={{
+                marginTop: 10,
+                backgroundColor: '#f7931a',
+                color: 'black',
+                textDecoration: 'none',
+                borderRadius: '0.5625rem',
+                width: '100%',
+                height: 44
+              }}
+              mt={2}
+              onClick={null}
+            >
+              Update UPI
+            </Button>
+          </Box>
         </Box>
-      </Box>
+      )}
+
       <Box className={classes.summaryCardOther}>
         <Typography
           variant="body2"
