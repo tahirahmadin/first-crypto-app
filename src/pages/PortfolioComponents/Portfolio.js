@@ -4,6 +4,7 @@ import { makeStyles } from '@mui/styles'
 import { Box, Button, IconButton, Input, Typography, useMediaQuery, useTheme } from '@mui/material'
 
 import { CopyAll } from '@mui/icons-material'
+import { getTokenBalancesOfWalletAddress } from 'src/actions/serverActions'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -117,10 +118,26 @@ export default function Portfolio() {
   const [upi, setUPI] = useState('tahirahmad@ybl')
   let accountSC = '0x87228Dd1eca832d14f4aB0CFb99c471195E7f6dB'
 
+  useEffect(() => {
+    if (accountSC) {
+      async function asyncFn() {
+        let balancesData = await getTokenBalancesOfWalletAddress(accountSC)
+        console.log(balancesData)
+        // if (web3Data && web3Data.identity === null) {
+        //   return;
+        // }
+        // setSocialDataValues(web3Data);
+      }
+
+      asyncFn()
+    }
+  }, [accountSC])
+
   const copyToClip = async () => {
     await navigator.clipboard.writeText(accountSC)
     alert('Wallet address is copied')
   }
+
   return (
     <Box>
       <Box className={classes.summaryCard}>

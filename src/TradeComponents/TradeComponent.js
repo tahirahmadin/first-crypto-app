@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Box,
   Button,
@@ -107,8 +107,6 @@ const TradeComponent = () => {
 
   const [screenCase, setScreenCase] = useState(2)
   const [amount, setAmount] = useState('10')
-  const [token, setToken] = useState('Ethereum')
-  const [frequency, setFrequency] = useState(1)
   const [time, setTime] = useState(5)
   const [stakeCase, setStakeCase] = useState(0)
   const [approveCase, setApproveCase] = useState(0)
@@ -121,6 +119,12 @@ const TradeComponent = () => {
   const handleApprove = async () => {}
 
   const handleStake = async () => {}
+
+  useEffect(() => {
+    if (time && amount) {
+      setTotalValue(amount * time)
+    }
+  }, [time, amount])
 
   return (
     <Box
@@ -199,7 +203,7 @@ const TradeComponent = () => {
               fontSize={md ? 14 : 12}
               color={'#ffffff'}
             >
-              Buy ${amount}/month
+              Buy ${amount}/day
             </Typography>
           </Box>
           <Box>

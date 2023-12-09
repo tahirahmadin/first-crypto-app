@@ -7,8 +7,8 @@ import useLocalStorageState from 'src/hooks/useLocalStorageState'
 
 const STORAGE_KEY_THEME_MODE = 'THEME_MODE_REACT_SERVICE_STATUS_KEY'
 
-export const DARK_THEME: PaletteMode = 'dark'
-export const LIGHT_THEME: PaletteMode = 'light'
+export const DARK_THEME: PaletteMode = 'light'
+export const LIGHT_THEME: PaletteMode = 'dark'
 
 type themeContextValue = {
   themeMode: PaletteMode
@@ -18,7 +18,7 @@ type themeContextValue = {
 }
 
 const initialState = {
-  themeMode: DARK_THEME,
+  themeMode: LIGHT_THEME,
   switchThemeMode: () => {},
   isDarkTheme: true,
   isLightTheme: false
