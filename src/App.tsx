@@ -40,7 +40,7 @@ function App() {
           <Header setStep={setStep} />
 
           <Box maxWidth="1000px" margin="40px auto 42px auto">
-            <Grid container spacing={1}>
+            <Grid container spacing={3}>
               <Grid item md={3} sm={12} xs={12}>
                 <NavMenu setStep={setStep} activeStep={activeStep} />
               </Grid>

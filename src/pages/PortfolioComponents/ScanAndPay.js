@@ -149,12 +149,13 @@ export default function ScanAndPay() {
     node,
     decoder
   })
-  const { safeSelected } = useAccountAbstraction()
+  const { safeSelected, isAuthenticated } = useAccountAbstraction()
   let accountSC = safeSelected
 
   const UPI_TO_ADDRESS = {
-    'tahirahmad.in@ybl': '0x5e6795934ad8Ac05fEb01b1EfD9A5d333bf25a33',
-    'aamiralam19911@ybl': '0xd49c810a3cDc76075FA328041353adc5521B8D93'
+    'tahirahmad.in@axl': '0x5e6795934ad8Ac05fEb01b1EfD9A5d333bf25a33',
+    'aamiralam19911@ybl': '0xd49c810a3cDc76075FA328041353adc5521B8D93',
+    '8791986707@ibl': '0xd49c810a3cDc76075FA328041353adc5521B8D93'
   }
   const { messages: filterMessages } = useFilterMessages({ node, decoder })
 
@@ -227,10 +228,10 @@ export default function ScanAndPay() {
       }
 
       if (message.from === accountSC) {
-        balanceTransfers += message.amount
+        balanceTransfers += parseInt(message.amount)
       }
       if (message.to === accountSC) {
-        balanceRecieved += message.amount
+        balanceRecieved += parseInt(message.amount)
       }
 
       let finalBalance = balanceTransfers - balanceRecieved
@@ -262,16 +263,19 @@ export default function ScanAndPay() {
   }
 
   const handleTransferFunds = async () => {
-    console.log(UPI_TO_ADDRESS[scannedUPI])
-    console.log(amount)
-    console.log(accountSC)
-    console.log(scannedUPI)
-    if ((amount, accountSC, scannedUPI)) {
-      if (UPI_TO_ADDRESS[scannedUPI]) {
-        console.log('hitting1')
-        await sendMessage(accountSC, UPI_TO_ADDRESS[scannedUPI], amount.toString())
-      }
-    }
+    await sendMessage(
+      '0x5e6795934ad8Ac05fEb01b1EfD9A5d333bf25a33',
+      '0xd49c810a3cDc76075FA328041353adc5521B8D93',
+      amount.toString()
+    )
+
+    setScreenCase(0)
+    // if (amount && safeSelected && scannedUPI && isAuthenticated) {
+    //   if (UPI_TO_ADDRESS[scannedUPI]) {
+    //     console.log('hitting1')
+    //     await sendMessage(safeSelected, UPI_TO_ADDRESS[scannedUPI], amount.toString())
+    //   }
+    // }
   }
 
   const handleTransferFundsDummy = async () => {
@@ -379,7 +383,9 @@ export default function ScanAndPay() {
             <Box className={classes.inputWrapper}>
               <Box display={'flex'} justifyContent={'center'}>
                 <img
-                  src={'https://avatars.githubusercontent.com/u/20106622?v=4'}
+                  src={
+                    'https://img.freepik.com/premium-vector/cute-wizard-investment-cryptocurrency-fairytale-avatar-character-cartoon-illustration_357749-1173.jpg?w=2000'
+                  }
                   height="50px"
                   width="50px"
                   style={{ borderRadius: '50%' }}
@@ -439,7 +445,7 @@ export default function ScanAndPay() {
                   height: 44
                 }}
                 mt={2}
-                onClick={handleTransferFundsDummy}
+                onClick={handleTransferFunds}
               >
                 {nodeStart ? 'Pay' : 'Waiting...'}
               </Button>
