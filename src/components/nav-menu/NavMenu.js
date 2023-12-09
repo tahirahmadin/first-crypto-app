@@ -12,6 +12,7 @@ import {
   HowToVote,
   Logout,
   Person,
+  QrCode,
   Savings
 } from '@mui/icons-material'
 
@@ -179,20 +180,40 @@ const NavMenu = ({ setStep, activeStep }) => {
             <Analytics
               style={{
                 marginRight: 10,
-                color: activeStep === 2 || activeStep === 3 ? '#000000' : '#9e9e9e'
+                color: activeStep === 2 ? '#000000' : '#9e9e9e'
               }}
             />
 
             <Typography
               variant="title1"
-              className={
-                activeStep === 2 || activeStep === 3 ? classes.selectedMenuTitle : classes.menuTitle
-              }
+              className={activeStep === 2 ? classes.selectedMenuTitle : classes.menuTitle}
             >
               Portfolio
             </Typography>
           </Box>
+          <Box
+            onClick={() => setStep(3)}
+            key={1}
+            className={classes.selectedPaper}
+            sx={{
+              boxShadow: 0,
+              bgcolor: activeStep === 3 ? '#EEEFF3' : 'transparent'
+            }}
+          >
+            <QrCode
+              style={{
+                marginRight: 10,
+                color: activeStep === 3 ? '#000000' : '#9e9e9e'
+              }}
+            />
 
+            <Typography
+              variant="title1"
+              className={activeStep === 3 ? classes.selectedMenuTitle : classes.menuTitle}
+            >
+              PayViaUPI
+            </Typography>
+          </Box>
           <Paper
             // onClick={disconnect}
             key={0}

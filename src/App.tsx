@@ -17,6 +17,7 @@ import VoteComponent from './pages/VoteComponents/VoteComponent'
 import { LightNodeProvider } from '@waku/react'
 import { Protocols } from '@waku/sdk'
 import ScanAndPay from './pages/PortfolioComponents/ScanAndPay'
+import ScanPayWrapper from './pages/PortfolioComponents/ScanPayWrapper'
 
 function App() {
   const { setChainId } = useAccountAbstraction()
@@ -48,7 +49,7 @@ function App() {
                   {activeStep === 0 && <TradeComponent />}
                   {activeStep === 1 && <VoteComponent />}
                   {activeStep === 2 && <Portfolio />}
-                  {activeStep === 3 && <ScanAndPay />}
+                  {activeStep === 3 && <ScanPayWrapper />}
                 </main>
               </Grid>
               <Grid item md={3} sm={12} xs={12}>
