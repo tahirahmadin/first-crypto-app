@@ -13,6 +13,9 @@ import { Grid } from '@mui/material'
 import Portfolio from './pages/PortfolioComponents/Portfolio'
 import HistoryComponent from './pages/PortfolioComponents/HistoryComponent'
 import VoteComponent from './pages/VoteComponents/VoteComponent'
+// Waku imports
+import { LightNodeProvider } from '@waku/react'
+import { Protocols } from '@waku/sdk'
 
 function App() {
   const { setChainId } = useAccountAbstraction()
@@ -25,39 +28,44 @@ function App() {
   const ActiveStepComponent = steps[activeStep].component
 
   return (
-    <Providers>
-      <>
-        <CssBaseline />
+    <LightNodeProvider
+      options={{ defaultBootstrap: true }}
+      protocols={[Protocols.Store, Protocols.Filter, Protocols.LightPush]}
+    >
+      <Providers>
+        <>
+          <CssBaseline />
 
-        {/* App header */}
-        <Header setStep={setStep} />
+          {/* App header */}
+          <Header setStep={setStep} />
 
-        <Box
-          display="flex"
-          gap={3}
-          alignItems="flex-start"
-          maxWidth="1200px"
-          margin="120px auto 42px auto"
-        >
-          {' '}
-          <Grid container spacing={2}>
-            <Grid item md={3}>
-              <NavMenu setStep={setStep} activeStep={activeStep} />
+          <Box
+            display="flex"
+            gap={3}
+            alignItems="flex-start"
+            maxWidth="1200px"
+            margin="40px auto 42px auto"
+          >
+            {' '}
+            <Grid container spacing={2}>
+              <Grid item md={3}>
+                <NavMenu setStep={setStep} activeStep={activeStep} />
+              </Grid>
+              <Grid item md={6}>
+                <main style={{ flexGrow: 1 }}>
+                  {activeStep === 0 && <TradeComponent />}
+                  {activeStep === 1 && <VoteComponent />}
+                  {activeStep === 2 && <Portfolio />}
+                </main>
+              </Grid>
+              <Grid item md={3}>
+                <main style={{ flexGrow: 1 }}>{activeStep === 2 && <HistoryComponent />}</main>
+              </Grid>
             </Grid>
-            <Grid item md={6}>
-              <main style={{ flexGrow: 1 }}>
-                {activeStep === 0 && <TradeComponent />}
-                {activeStep === 1 && <VoteComponent />}
-                {activeStep === 2 && <Portfolio />}
-              </main>
-            </Grid>
-            <Grid item md={3}>
-              <main style={{ flexGrow: 1 }}>{activeStep === 2 && <HistoryComponent />}</main>
-            </Grid>
-          </Grid>
-        </Box>
-      </>
-    </Providers>
+          </Box>
+        </>
+      </Providers>
+    </LightNodeProvider>
   )
 }
 
