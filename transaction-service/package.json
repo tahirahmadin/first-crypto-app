@@ -1,0 +1,53 @@
+{
+  "name": "Eth-istambul",
+  "version": "1.0.0",
+  "description": "Sleep swap off-chain service to invoke airnode",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "server": "nodemon server",
+    "dev": "nodemon",
+    "test": "jest --watch"
+  },
+  "jest": {
+    "testEmvironment": "node"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@1inch/fusion-sdk": "^0.1.12",
+    "@api3/airnode-abi": "^0.13.0",
+    "apollo-cache-inmemory": "^1.6.6",
+    "apollo-client": "^2.6.10",
+    "apollo-link-http": "^1.5.17",
+    "avsc": "^5.7.7",
+    "axios": "^1.6.2",
+    "bignumber.js": "^9.0.0",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "ethers": "5.7.2",
+    "express": "^4.18.2",
+    "express-jwt": "^6.0.0",
+    "express-validator": "^6.3.1",
+    "fs": "^0.0.1-security",
+    "graphql": "^15.8.0",
+    "graphql-request": "^5.2.0",
+    "graphql-tag": "^2.12.6",
+    "node-cache": "^5.1.2",
+    "node-cron": "^3.0.2",
+    "npm": "^9.6.0",
+    "qs": "^6.11.2",
+    "web3": "^4.2.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.22.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "nodemon": "^2.0.7"
+  }
+}
