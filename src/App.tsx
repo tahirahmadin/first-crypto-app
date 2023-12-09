@@ -9,6 +9,7 @@ import RelayerKitDemo from 'src/pages/RelayerKitDemo'
 import NavMenu from './components/nav-menu/NavMenu'
 import { useAccountAbstraction } from './store/accountAbstractionContext'
 import TradeComponent from './TradeComponents/TradeComponent'
+import { Grid } from '@mui/material'
 
 function App() {
   const { setChainId } = useAccountAbstraction()
@@ -35,11 +36,17 @@ function App() {
           maxWidth="1200px"
           margin="120px auto 42px auto"
         >
-          <NavMenu setStep={setStep} activeStep={activeStep} />
-
-          <main style={{ flexGrow: 1 }}>
-            <ActiveStepComponent setStep={setStep} />
-          </main>
+          {' '}
+          <Grid container>
+            <Grid item md={3}>
+              <NavMenu setStep={setStep} activeStep={activeStep} />
+            </Grid>
+            <Grid item md={6}>
+              <main style={{ flexGrow: 1 }}>
+                <ActiveStepComponent setStep={setStep} />
+              </main>
+            </Grid>
+          </Grid>
         </Box>
       </>
     </Providers>

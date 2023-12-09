@@ -294,9 +294,17 @@ const TradeComponent = () => {
         </Box>
 
         <Button
-          className={classes.buttonConnect}
+          style={{
+            marginTop: 10,
+            backgroundColor: '#f7931a',
+            color: 'black',
+            textDecoration: 'none',
+            borderRadius: '0.5625rem',
+            width: '100%',
+            height: 44
+          }}
           mt={2}
-          disabled={!accountSC}
+          // disabled={!accountSC}
           onClick={isApproved ? handleStake : handleApprove}
         >
           {isApproved ? 'Buy Now' : 'Approve Spending'}{' '}
