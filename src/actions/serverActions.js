@@ -26,15 +26,9 @@ export const getTokenBalancesOfWalletAddress = async (address) => {
 export const getTokenDetailsByAddresses = async (addresses) => {
   console.log(addresses.toString())
   const url = `http://localhost:5002/?url=https://api.1inch.dev/token/v1.2/137/custom?addresses=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174,0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063`
-  // Setting up headers
-  const config = {
-    params: {
-      addresses:
-        '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174,0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063'
-    }
-  }
+
   let response = axios
-    .get(url)
+    .get(url, { params: { address: '1232' } })
     .then((res) => {
       return res.data
     })
@@ -46,15 +40,15 @@ export const getTokenDetailsByAddresses = async (addresses) => {
 
 // Get spot price of tokens by addresses
 export const getSpotPriceOfTokensByAddresses = async (addresses) => {
-  let callUrl =
-    'https://api.1inch.dev/price/v1.1/137/0xc2132d05d31c914a87c6611c10748aeb04b58e8f?currency=USD'
+  let callUrl = `https://api.1inch.dev/price/v1.1/137/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174,0x67eb41a14c0fe5cd701fc9d5a3d6597a72f641a6`
   const url = `http://localhost:5002/?url=${callUrl}`
-  // Setting up headers
+
   const config = {
     params: {
       currency: 'USD'
     }
   }
+
   let response = axios
     .get(url)
     .then((res) => {
@@ -79,7 +73,7 @@ export const getPortfolioGrowthChartByAddress = async (address) => {
     }
   }
   let response = axios
-    .get(url)
+    .get(url, config)
     .then((res) => {
       return res.data
     })

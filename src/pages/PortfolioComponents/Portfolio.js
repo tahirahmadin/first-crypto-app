@@ -122,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Portfolio() {
   const classes = useStyles()
   const theme = useTheme()
-  const [totalPortfolio, setTotalPortfolio] = useState(12000)
+  const [totalPortfolio, setTotalPortfolio] = useState(695)
   const [showUPI, setShowUPI] = useState(false)
   const [upi, setUPI] = useState('youname@bankId')
   const [activeTokens, setActiveTokens] = useState('tahirahmad@ybl')
@@ -138,7 +138,7 @@ export default function Portfolio() {
   useEffect(() => {
     if (safeSelected) {
       async function asyncFn() {
-        let balancesData = await getTokenBalancesOfWalletAddress(safeSelected)
+        let balancesData = await getTokenBalancesOfWalletAddress(accountSC)
 
         if (balancesData) {
           const filteredData = Object.keys(balancesData)
@@ -149,15 +149,12 @@ export default function Portfolio() {
               return obj
             }, {})
           let tempAddresses = Object.keys(filteredData)
-          console.log('tempAddresses')
-          console.log(tempAddresses)
-          let tokensData = await getTokenDetailsByAddresses(tempAddresses)
-          let pricesData = await getSpotPriceOfTokensByAddresses(tempAddresses)
-          let portfolioData = await getPortfolioGrowthChartByAddress(tempAddresses)
+          // console.log('tempAddresses')
+          // console.log(tempAddresses)
+          // let tokensData = await getTokenDetailsByAddresses(tempAddresses)
+          let pricesData = await getSpotPriceOfTokensByAddresses(tempAddresses.toString())
+          // let portfolioData = await getPortfolioGrowthChartByAddress(tempAddresses)
 
-          console.log(tokensData)
-          console.log(pricesData)
-          console.log(portfolioData)
           setActiveTokens(filteredData)
           console.log(filteredData)
         }
@@ -436,7 +433,7 @@ export default function Portfolio() {
               alignItems={'flex-start'}
             >
               <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
-                USDT
+                USDC
               </Typography>
               <Typography
                 variant="caption"
@@ -445,7 +442,7 @@ export default function Portfolio() {
                 color={'#757575'}
                 textAlign={'center'}
               >
-                USD Tether
+                USDC Token
               </Typography>
             </Box>
           </Box>
@@ -474,7 +471,7 @@ export default function Portfolio() {
                 color={'#757575'}
                 textAlign={'center'}
               >
-                $121
+                $120
               </Typography>
             </Box>
           </Box>
@@ -510,7 +507,7 @@ export default function Portfolio() {
               alignItems={'flex-start'}
             >
               <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
-                ETH
+                WETH
               </Typography>
               <Typography
                 variant="caption"
@@ -548,7 +545,7 @@ export default function Portfolio() {
                 color={'#757575'}
                 textAlign={'center'}
               >
-                $500
+                $575
               </Typography>
             </Box>
           </Box>
