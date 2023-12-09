@@ -15,6 +15,12 @@ import {
   QrCode,
   Savings
 } from '@mui/icons-material'
+import { useEffect, useState } from 'react'
+import { getPositionInfo } from 'src/utils/getUserPosition'
+import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
+import { getERC20Info } from 'src/utils/getERC20Info'
+import { TOKENS } from 'src/constants/addresses'
+import { fromWei } from 'src/utils/unitConverter'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,6 +68,28 @@ const NavMenu = ({ setStep, activeStep }) => {
   const classes = useStyles()
   const theme = useTheme()
   const md = useMediaQuery(theme.breakpoints.down('md'))
+
+  const [tokenBalance, setTokenBalance] = useState('0')
+  const { safeSelected, web3Provider, chainId, logoutWeb3Auth } = useAccountAbstraction()
+
+  useEffect(() => {
+    if (!safeSelected || !web3Provider || !chainId) {
+      return
+    }
+    async function load() {
+      const data = await getERC20Info(TOKENS?.USDC[5], web3Provider, safeSelected)
+      setTokenBalance(data?.balance)
+    }
+
+    load()
+    setInterval(() => {
+      load()
+    }, 60000)
+  }, [safeSelected, web3Provider, chainId])
+
+  const disconnect = async () => {
+    logoutWeb3Auth()
+  }
 
   return (
     <Box
@@ -112,7 +140,7 @@ const NavMenu = ({ setStep, activeStep }) => {
                 fontWeight: 600
               }}
             >
-              $210
+              $ {fromWei(tokenBalance, 6)} USDC
             </Typography>
 
             <Typography variant="caption" style={{ color: '#414141', lineHeight: 1 }}>
@@ -215,7 +243,7 @@ const NavMenu = ({ setStep, activeStep }) => {
             </Typography>
           </Box>
           <Paper
-            // onClick={disconnect}
+            onClick={disconnect}
             key={0}
             className={classes.selectedPaper}
             sx={{

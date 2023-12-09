@@ -83,16 +83,19 @@ contract FirstCrypto is Ownable {
     );
 
     // init contract
-    constructor(address _usdtAddress) {
+    constructor() {
         managers[msg.sender] = 1;
         ownerAddress = msg.sender;
-        usdtAddress = _usdtAddress;
     }
 
     //modifiers
     modifier onlyManager() {
         require(managers[msg.sender] == 1);
         _;
+    }
+
+    function setInputToken(address _token) public onlyManager {
+        usdtAddress = _token;
     }
 
     function addManager(address _manager) public onlyOwner {
@@ -127,7 +130,7 @@ contract FirstCrypto is Ownable {
             usdtAddress,
             msg.sender,
             ownerAddress,
-            _singleOrderAmount
+            total_order_amount
         );
 
         // start new position

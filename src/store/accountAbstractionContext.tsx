@@ -48,6 +48,7 @@ type accountAbstractionContextValue = {
     toToken?: string
   ) => Promise<void>
   approveRelayTransaction: (amount: string, token: string, spender: string) => Promise<void>
+  updateUpiTransaction: (upi: string) => Promise<void>
   gelatoTaskId?: string
   openStripeWidget: () => Promise<void>
   closeStripeWidget: () => Promise<void>
@@ -68,6 +69,7 @@ const initialState = {
     toToken?: string
   ) => {},
   approveRelayTransaction: async (amount: string, token: string, spender: string) => {},
+  updateUpiTransaction: async (upi: string) => {},
   setChainId: () => {},
   setSafeSelected: () => {},
   setTokenAddress: () => {},
@@ -507,6 +509,40 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     return response
   }
 
+  const updateUpiTransaction = async (upi: string) => {
+    if (web3Provider) {
+      setIsRelayerLoading(true)
+
+      const contractAddress = FIRST_CRYPTO[5]
+
+      const contractInterface = new ethers.Interface(FirstCryptoABI)
+
+      const dumpSafeTransafer: MetaTransactionData[] = [
+        {
+          to: contractAddress,
+          data: contractInterface.encodeFunctionData('updateUpi', [upi]),
+          value: ethers.parseUnits('0', 'ether').toString(),
+          operation: 0 // OperationType.Call,
+        }
+      ]
+
+      const options: MetaTransactionOptions = {
+        isSponsored: false,
+        gasLimit: '600000', // in this alfa version we need to manually set the gas limit
+        gasToken: tokenAddress
+      }
+
+      const response = (await accountAbstractionKit?.relayTransaction(
+        dumpSafeTransafer,
+        options
+      )) as GelatoRelayResponse
+
+      setIsRelayerLoading(false)
+      console.log(response)
+      setGelatoTaskId(response?.taskId)
+    }
+  }
+
   const relayTransaction = async (
     amount: string,
     steps: number,
@@ -518,7 +554,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
       const contractAddress = FIRST_CRYPTO[5] //'0x78ccc7e50c7fda32CdbAa75D60EccB182cFC45C6'
       const inputToken = fromToken //TOKENS.USDC[5] //'0xBD4B78B3968922e8A53F1d845eB3a128Adc2aA12'
-      const inputAmount = toWei(BN(amount).multipliedBy(steps).toString(), 6) //'10000000'
+      const inputAmount = toWei(amount?.toString(), 6) //'10000000'
 
       const contractInterface = new ethers.Interface(FirstCryptoABI)
 
@@ -675,6 +711,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     isRelayerLoading,
     relayTransaction,
     approveRelayTransaction,
+    updateUpiTransaction,
     gelatoTaskId,
 
     openStripeWidget,

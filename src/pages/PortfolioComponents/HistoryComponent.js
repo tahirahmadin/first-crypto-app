@@ -6,6 +6,8 @@ import { Box, IconButton, Typography, useMediaQuery, useTheme } from '@mui/mater
 import { Cancel, CopyAll } from '@mui/icons-material'
 import PayViaUPI from './PayViaUPI'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
+import { getPositionInfo } from 'src/utils/getUserPosition'
+import { fromWei } from 'src/utils/unitConverter'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -108,6 +110,26 @@ export default function HistoryComponent({ setStep }) {
   const { safeSelected } = useAccountAbstraction()
   let accountSC = safeSelected
 
+  const [userPositions, setUserPositions] = useState([])
+
+  const { safeSelected, web3Provider, chainId } = useAccountAbstraction()
+
+  useEffect(() => {
+    if (!safeSelected || !web3Provider || !chainId) {
+      return
+    }
+    async function load() {
+      const data = await getPositionInfo(web3Provider, safeSelected)
+
+      setUserPositions(data.formattedOrders)
+    }
+
+    load()
+    setInterval(() => {
+      load()
+    }, 60000)
+  }, [safeSelected, web3Provider, chainId])
+
   const copyToClip = async () => {
     await navigator.clipboard.writeText(accountSC)
     alert('Wallet address is copied')
@@ -137,207 +159,75 @@ export default function HistoryComponent({ setStep }) {
         >
           Active strategies
         </Typography>
-        <Box className={classes.summaryCardOther}>
-          <Box
-            display={'flex'}
-            flexDirection={'row'}
-            justifyContent={'space-between'}
-            alignItems={'center'}
-          >
+        {userPositions?.map((position) => (
+          <Box className={classes.summaryCardOther}>
             <Box
               display={'flex'}
               flexDirection={'row'}
-              justifyContent={'flex-start'}
+              justifyContent={'space-between'}
               alignItems={'center'}
             >
-              <Box>
-                <img
-                  src={
-                    'https://w7.pngwing.com/pngs/268/1013/png-transparent-ethereum-eth-hd-logo-thumbnail.png'
-                  }
-                  height="25px"
-                  width="25px"
-                  style={{ borderRadius: '50%' }}
-                />
+              <Box
+                display={'flex'}
+                flexDirection={'row'}
+                justifyContent={'flex-start'}
+                alignItems={'center'}
+              >
+                <Box>
+                  <img
+                    src={
+                      'https://w7.pngwing.com/pngs/268/1013/png-transparent-ethereum-eth-hd-logo-thumbnail.png'
+                    }
+                    height="25px"
+                    width="25px"
+                    style={{ borderRadius: '50%' }}
+                  />
+                </Box>
+                <Box
+                  ml={1}
+                  display={'flex'}
+                  flexDirection={'column'}
+                  justifyContent={'center'}
+                  alignItems={'flex-start'}
+                >
+                  <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
+                    DCA for {fromWei(position?.depositAmount?.toString(), 6)}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    fontSize={12}
+                    fontWeight={400}
+                    color={'#272727'}
+                    textAlign={'center'}
+                  >
+                    orders: {position?.executedGrids}/{position?.grids} filled
+                  </Typography>
+                </Box>
               </Box>
+
               <Box
                 ml={1}
                 display={'flex'}
                 flexDirection={'column'}
                 justifyContent={'center'}
-                alignItems={'flex-start'}
+                alignItems={'flex-end'}
               >
-                <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
-                  DCA for $100
-                </Typography>
                 <Typography
                   variant="caption"
-                  fontSize={12}
+                  fontSize={10}
                   fontWeight={400}
                   color={'#272727'}
                   textAlign={'center'}
                 >
-                  7 orders
+                  Amount
                 </Typography>
-              </Box>
-            </Box>
-
-            <Box
-              ml={1}
-              display={'flex'}
-              flexDirection={'column'}
-              justifyContent={'center'}
-              alignItems={'flex-end'}
-            >
-              <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
-                $10 USDT
-              </Typography>
-              <Typography
-                variant="caption"
-                fontSize={10}
-                fontWeight={400}
-                color={'#272727'}
-                textAlign={'center'}
-              >
-                0.0032 ETH
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-        <Box className={classes.summaryCardOther}>
-          <Box
-            display={'flex'}
-            flexDirection={'row'}
-            justifyContent={'space-between'}
-            alignItems={'center'}
-          >
-            <Box
-              display={'flex'}
-              flexDirection={'row'}
-              justifyContent={'flex-start'}
-              alignItems={'center'}
-            >
-              <Box>
-                <img
-                  src={
-                    'https://w7.pngwing.com/pngs/268/1013/png-transparent-ethereum-eth-hd-logo-thumbnail.png'
-                  }
-                  height="25px"
-                  width="25px"
-                  style={{ borderRadius: '50%' }}
-                />
-              </Box>
-              <Box
-                ml={1}
-                display={'flex'}
-                flexDirection={'column'}
-                justifyContent={'center'}
-                alignItems={'flex-start'}
-              >
                 <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
-                  DCA for $100
-                </Typography>
-                <Typography
-                  variant="caption"
-                  fontSize={12}
-                  fontWeight={400}
-                  color={'#272727'}
-                  textAlign={'center'}
-                >
-                  7 orders
+                  {fromWei(position.fiatOrderAmount, 6)} USDC
                 </Typography>
               </Box>
-            </Box>
-
-            <Box
-              ml={1}
-              display={'flex'}
-              flexDirection={'column'}
-              justifyContent={'center'}
-              alignItems={'flex-end'}
-            >
-              <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
-                $10 USDT
-              </Typography>
-              <Typography
-                variant="caption"
-                fontSize={10}
-                fontWeight={400}
-                color={'#272727'}
-                textAlign={'center'}
-              >
-                0.0032 ETH
-              </Typography>
             </Box>
           </Box>
-        </Box>
-        <Box className={classes.summaryCardOther}>
-          <Box
-            display={'flex'}
-            flexDirection={'row'}
-            justifyContent={'space-between'}
-            alignItems={'center'}
-          >
-            <Box
-              display={'flex'}
-              flexDirection={'row'}
-              justifyContent={'flex-start'}
-              alignItems={'center'}
-            >
-              <Box>
-                <img
-                  src={
-                    'https://w7.pngwing.com/pngs/268/1013/png-transparent-ethereum-eth-hd-logo-thumbnail.png'
-                  }
-                  height="25px"
-                  width="25px"
-                  style={{ borderRadius: '50%' }}
-                />
-              </Box>
-              <Box
-                ml={1}
-                display={'flex'}
-                flexDirection={'column'}
-                justifyContent={'center'}
-                alignItems={'flex-start'}
-              >
-                <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
-                  DCA for $100
-                </Typography>
-                <Typography
-                  variant="caption"
-                  fontSize={12}
-                  fontWeight={400}
-                  color={'#272727'}
-                  textAlign={'center'}
-                >
-                  7 orders
-                </Typography>
-              </Box>
-            </Box>
-
-            <Box
-              ml={1}
-              display={'flex'}
-              flexDirection={'column'}
-              justifyContent={'center'}
-              alignItems={'flex-end'}
-            >
-              <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
-                $10 USDT
-              </Typography>
-              <Typography
-                variant="caption"
-                fontSize={10}
-                fontWeight={400}
-                color={'#272727'}
-                textAlign={'center'}
-              >
-                0.0032 ETH
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
+        ))}
       </Box>
     </Box>
   )

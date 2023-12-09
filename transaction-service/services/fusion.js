@@ -28,7 +28,7 @@ function fusionSdk(chainId) {
   // });
   const sdk = new FusionSDK({
     url: 'https://api.1inch.dev/fusion',
-    network: chainId,
+    network: NetworkEnum.POLYGON,
     blockchainProvider,
     authKey: process.env.FUSION_AUTH_KEY
   })

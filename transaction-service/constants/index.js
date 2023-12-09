@@ -9,7 +9,7 @@ const NETWORK_RPC = {
 const CONTRACT_ADDRESSES = {
   FIRST_CRYPTO: {
     137: '',
-    5: '0x95Cc7Cff35f7a44D49b56De660B54bB36a332A16'
+    5: '0x8d5Ff28faDe46A2f41D38cC1854E11c958211792'
   },
   USDC: {
     137: '',

@@ -6,10 +6,18 @@ async function main() {
   const accumulationFactory = await ethers.getContractFactory('FirstCrypto')
 
   const usdc = '0xBD4B78B3968922e8A53F1d845eB3a128Adc2aA12'
-  const deployParams = [usdc]
+  const usdcScroll = '0xA804CA195cAa81EE8caD0FCc33a6e1961eE096c4'
+  const usdcArbitrum = '0x94Fcc9C543220544301d10cA10b9b1a4dF0eaf1F'
+  const deployParams = []
   const accumulation = await accumulationFactory.deploy(...deployParams)
-  await accumulation.deployed()
+  const tx1 = await accumulation.deployed()
+  // await tx1.wait(1)
   console.log('FirstCrypto:', accumulation.address)
+
+  const contract = accumulationFactory.attach(accumulation.address)
+
+  const tx = await contract.setInputToken(usdc)
+  console.log('input token set ', tx?.hash)
 
   // await hre.run('verify:verify', {
   //   address: accumulation.address,
