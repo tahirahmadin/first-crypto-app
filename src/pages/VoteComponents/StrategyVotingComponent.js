@@ -8,7 +8,7 @@ import {
   useFilterMessages
 } from '@waku/react'
 import { makeStyles } from '@mui/styles'
-import { Box, Button, Typography, useTheme } from '@mui/material'
+import { Box, Button, CircularProgress, Typography, useTheme } from '@mui/material'
 import { Cancel, CheckCircle, ThumbDownAlt, ThumbUpAlt } from '@mui/icons-material'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 
@@ -190,43 +190,10 @@ export default function StrategyVotingComponent(props) {
 
     messages = messages.map((message) => decodeMessage(message))
     console.log(messages)
-    messages.map((message, index) => {
-      if (message.sender === accountSC) {
-        setVoteType(message.message)
-        setIsVotes(true)
-      }
-      if (message.message === '1') {
-        let tempObj = {
-          user: message.sender,
-          message: message.message,
-          timestamp: message.timestamp
-        }
-        tempSupport.push(tempObj)
-      }
-
-      if (message.message === '2') {
-        let tempObj = {
-          user: message.sender,
-          message: message.message,
-          timestamp: message.timestamp
-        }
-        tempAgainst.push(tempObj)
-      }
-
-      setSupportedVotes(tempSupport)
-      setAgainstVotes(tempAgainst)
-    })
-  }, [storeMessages, filterMessages])
-
-  useEffect(() => {
-    let messages = storeMessages.concat(filterMessages)
-
-    let tempSupport = []
-    let tempAgainst = []
-
-    messages = messages.map((message) => decodeMessage(message))
-    console.log(messages)
     messages.forEach((message) => {
+      if (message === undefined) {
+        return
+      }
       if (message.sender === accountSC) {
         setIsVotes(true)
       }
@@ -254,10 +221,14 @@ export default function StrategyVotingComponent(props) {
   }, [storeMessages, filterMessages])
 
   const handleSupportStrategy = async () => {
-    await sendMessage(accountSC, '1')
+    if (accountSC) {
+      await sendMessage(accountSC, '1')
+    }
   }
   const handleRejectStrategy = async () => {
-    await sendMessage(accountSC, '2')
+    if (accountSC) {
+      await sendMessage(accountSC, '2')
+    }
   }
 
   return (
@@ -272,144 +243,151 @@ export default function StrategyVotingComponent(props) {
       >
         Vote your upcoming strategy
       </Typography>
-      <Box className={classes.summaryCard}>
-        <Box
-          display={'flex'}
-          flexDirection={'column'}
-          justifyContent={'space-between'}
-          alignItems={'center'}
-        >
-          <img
-            src={'https://i.ytimg.com/vi/-fnk_fDO2rw/maxresdefault.jpg'}
-            height="240px"
-            width="100%"
-            style={{ borderRadius: 10 }}
-          />
-          <Typography
-            variant="h2"
-            fontSize={24}
-            fontWeight={600}
-            color={'#f9f9f9'}
-            textAlign={'left'}
+      {nodeStart && (
+        <Box className={classes.summaryCard}>
+          <Box
+            display={'flex'}
+            flexDirection={'column'}
+            justifyContent={'space-between'}
+            alignItems={'center'}
           >
-            Governance: New strategy proposal - Buy the dip and sell the profit
-          </Typography>
+            <img
+              src={'https://i.ytimg.com/vi/-fnk_fDO2rw/maxresdefault.jpg'}
+              height="240px"
+              width="100%"
+              style={{ borderRadius: 10 }}
+            />
+            <Typography
+              variant="h2"
+              fontSize={24}
+              fontWeight={600}
+              color={'#f9f9f9'}
+              textAlign={'left'}
+            >
+              Governance: New strategy proposal - Buy the dip and sell the profit
+            </Typography>
+            <Typography
+              variant="body2"
+              fontSize={14}
+              fontWeight={400}
+              color={'#ffffff'}
+              textAlign={'left'}
+              my={1}
+            >
+              we are looking for votes to support or reject the new strategy to add in the platform
+              which requires you to vote using Waku Communications
+            </Typography>
+
+            {voteType === '1' && (
+              <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                <CheckCircle style={{ color: '#81c784' }} />
+                <Typography
+                  variant="h6"
+                  fontSize={12}
+                  fontWeight={600}
+                  color={'#81c784'}
+                  textAlign={'center'}
+                >
+                  SUPPORTED!
+                </Typography>
+              </Box>
+            )}
+            {voteType === '2' && (
+              <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
+                <Cancel style={{ color: 'red' }} />
+                <Typography
+                  variant="h6"
+                  fontSize={12}
+                  fontWeight={600}
+                  color={'red'}
+                  textAlign={'center'}
+                >
+                  REJECTED!
+                </Typography>
+              </Box>
+            )}
+            {isVoted && (
+              <Typography
+                variant="h6"
+                fontSize={12}
+                fontWeight={600}
+                color={''}
+                textAlign={'center'}
+                mt={1}
+              >
+                Thanks for voting, You can now wait for the results!
+              </Typography>
+            )}
+            <Box mt={1} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+              <Box
+                style={{ color: 'white' }}
+                display={'flex'}
+                justifyContent={'flex-start'}
+                alignItems={'center'}
+                mr={2}
+              >
+                <Button
+                  disabled={isVoted}
+                  onClick={handleSupportStrategy}
+                  style={{
+                    marginTop: 10,
+                    backgroundColor: isVoted ? '#bdbdbd' : '#f7931a',
+                    color: isVoted ? '#454545' : 'black',
+                    textDecoration: 'none',
+                    borderRadius: '0.5625rem',
+                    width: '100%',
+                    height: 44
+                  }}
+                  mt={2}
+                >
+                  <ThumbUpAlt style={{ color: 'black' }} />
+                  Support ({supportedVotes && supportedVotes.length})
+                </Button>
+              </Box>
+              <Box
+                style={{ color: 'white' }}
+                display={'flex'}
+                justifyContent={'flex-end'}
+                alignItems={'center'}
+                ml={2}
+              >
+                <Button
+                  disabled={isVoted}
+                  onClick={handleRejectStrategy}
+                  style={{
+                    marginTop: 10,
+                    backgroundColor: isVoted ? '#bdbdbd' : '#f7931a',
+                    color: isVoted ? '#454545' : 'black',
+                    textDecoration: 'none',
+                    borderRadius: '0.5625rem',
+                    width: '100%',
+                    height: 44
+                  }}
+                  mt={2}
+                >
+                  <ThumbDownAlt style={{ color: 'black' }} /> Reject (
+                  {againstVotes && againstVotes.length})
+                </Button>
+              </Box>
+            </Box>
+          </Box>{' '}
           <Typography
             variant="body2"
-            fontSize={14}
-            fontWeight={400}
-            color={'#ffffff'}
-            textAlign={'left'}
-            my={1}
+            fontSize={12}
+            fontWeight={500}
+            color={'#E4E4E2'}
+            textAlign={'center'}
+            mt={3}
           >
-            we are looking for votes to support or reject the new strategy to add in the platform
-            which requires you to vote using Waku Communications
+            Voting will end in next 35 minutues
           </Typography>
-
-          {voteType === '1' && (
-            <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
-              <CheckCircle style={{ color: '#81c784' }} />
-              <Typography
-                variant="h6"
-                fontSize={12}
-                fontWeight={600}
-                color={'#81c784'}
-                textAlign={'center'}
-              >
-                SUPPORTED!
-              </Typography>
-            </Box>
-          )}
-          {voteType === '2' && (
-            <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
-              <Cancel style={{ color: 'red' }} />
-              <Typography
-                variant="h6"
-                fontSize={12}
-                fontWeight={600}
-                color={'red'}
-                textAlign={'center'}
-              >
-                REJECTED!
-              </Typography>
-            </Box>
-          )}
-          {isVoted && (
-            <Typography
-              variant="h6"
-              fontSize={12}
-              fontWeight={600}
-              color={''}
-              textAlign={'center'}
-              mt={1}
-            >
-              Thanks for voting, You can now wait for the results!
-            </Typography>
-          )}
-          <Box mt={1} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-            <Box
-              style={{ color: 'white' }}
-              display={'flex'}
-              justifyContent={'flex-start'}
-              alignItems={'center'}
-              mr={2}
-            >
-              <Button
-                disabled={isVoted}
-                onClick={handleSupportStrategy}
-                style={{
-                  marginTop: 10,
-                  backgroundColor: isVoted ? '#bdbdbd' : '#f7931a',
-                  color: isVoted ? '#454545' : 'black',
-                  textDecoration: 'none',
-                  borderRadius: '0.5625rem',
-                  width: '100%',
-                  height: 44
-                }}
-                mt={2}
-              >
-                <ThumbUpAlt style={{ color: 'black' }} />
-                Support ({supportedVotes && supportedVotes.length})
-              </Button>
-            </Box>
-            <Box
-              style={{ color: 'white' }}
-              display={'flex'}
-              justifyContent={'flex-end'}
-              alignItems={'center'}
-              ml={2}
-            >
-              <Button
-                disabled={isVoted}
-                onClick={handleRejectStrategy}
-                style={{
-                  marginTop: 10,
-                  backgroundColor: isVoted ? '#bdbdbd' : '#f7931a',
-                  color: isVoted ? '#454545' : 'black',
-                  textDecoration: 'none',
-                  borderRadius: '0.5625rem',
-                  width: '100%',
-                  height: 44
-                }}
-                mt={2}
-              >
-                <ThumbDownAlt style={{ color: 'black' }} /> Reject (
-                {againstVotes && againstVotes.length})
-              </Button>
-            </Box>
-          </Box>
-        </Box>{' '}
-        <Typography
-          variant="body2"
-          fontSize={12}
-          fontWeight={500}
-          color={'#E4E4E2'}
-          textAlign={'center'}
-          mt={3}
-        >
-          Voting will end in next 35 minutues
-        </Typography>
-      </Box>
+        </Box>
+      )}
+      {!nodeStart && (
+        <Box display="flex" justifyContent={'center'}>
+          <CircularProgress />
+        </Box>
+      )}
     </section>
   )
 }

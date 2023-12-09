@@ -133,7 +133,7 @@ export default function HistoryComponent({ setStep }) {
           textAlign={'center'}
           mb={1}
         >
-          Trade history
+          Active strategies
         </Typography>
         <Box className={classes.summaryCardOther}>
           <Box

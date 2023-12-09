@@ -115,7 +115,7 @@ const NavMenu = ({ setStep, activeStep }) => {
             </Typography>
 
             <Typography variant="caption" style={{ color: '#414141', lineHeight: 1 }}>
-              Wallet Balance
+              USDT Balance
             </Typography>
           </Box>
         </Box>

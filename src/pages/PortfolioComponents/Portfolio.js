@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { makeStyles } from '@mui/styles'
-
+import Chart from 'react-apexcharts'
 import { Box, Button, IconButton, Input, Typography, useMediaQuery, useTheme } from '@mui/material'
 
 import { CopyAll } from '@mui/icons-material'
 import {
+  getPortfolioGrowthChartByAddress,
   getSpotPriceOfTokensByAddresses,
   getTokenBalancesOfWalletAddress,
   getTokenDetailsByAddresses
@@ -143,8 +144,11 @@ export default function Portfolio() {
           console.log(tempAddresses)
           let tokensData = await getTokenDetailsByAddresses(tempAddresses)
           let pricesData = await getSpotPriceOfTokensByAddresses(tempAddresses)
+          let portfolioData = await getPortfolioGrowthChartByAddress(tempAddresses)
+
           console.log(tokensData)
           console.log(pricesData)
+          console.log(portfolioData)
           setActiveTokens(filteredData)
           console.log(filteredData)
         }
@@ -157,6 +161,49 @@ export default function Portfolio() {
   const copyToClip = async () => {
     await navigator.clipboard.writeText(accountSC)
     alert('Wallet address is copied')
+  }
+
+  const chartData = {
+    options: {
+      series: [
+        {
+          name: 'Portfolio Balance',
+          data: [10, 12, 17, 19, 33, 28, 24, 44, 48]
+        }
+      ],
+      chart: {
+        height: 100,
+        type: 'line',
+        zoom: {
+          enabled: false
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'straight'
+      },
+      title: {
+        text: 'Product Trends by Month',
+        align: 'left'
+      },
+      grid: {
+        row: {
+          colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+          opacity: 0.5
+        }
+      },
+      xaxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
+      }
+    },
+    series: [
+      {
+        name: 'series-1',
+        data: [10, 12, 17, 19, 33, 28, 24, 44, 48]
+      }
+    ]
   }
 
   return (
@@ -218,6 +265,7 @@ export default function Portfolio() {
             </Typography>
           </Box>
         </Box>
+
         <Box
           pl={1}
           display={'flex'}
@@ -255,19 +303,25 @@ export default function Portfolio() {
           >
             tahirahmad@ybl
           </Typography>
-          <Typography
-            onClick={() => setShowUPI(!showUPI)}
-            variant="caption"
-            fontSize={12}
-            fontWeight={300}
-            color={'#e0e0e0'}
-            textAlign={'center'}
-            alignItems={'center'}
+          <Button
+            style={{ backgroundColor: 'white', color: 'black', width: 'fit-content', height: 30 }}
           >
-            {showUPI ? 'Hide UPI Update' : ' Update UPI'}
-          </Typography>
+            <Typography
+              onClick={() => setShowUPI(!showUPI)}
+              variant="caption"
+              fontSize={12}
+              fontWeight={300}
+              textAlign={'center'}
+              alignItems={'center'}
+            >
+              {showUPI ? 'Hide UPI Update' : ' Update UPI'}
+            </Typography>
+          </Button>
         </Box>
       </Box>
+      {/* <div className="line-chart">
+        <Chart options={chartData.options} series={chartData.series} type="line" width="500" />
+      </div> */}
       {showUPI && (
         <Box className={classes.summaryCard}>
           <Box mt={1} className={classes.inputWrapper}>
@@ -294,7 +348,7 @@ export default function Portfolio() {
                 color: 'black',
                 textDecoration: 'none',
                 borderRadius: '0.5625rem',
-                width: '100%',
+                width: 'fit-content',
                 height: 44
               }}
               mt={2}
