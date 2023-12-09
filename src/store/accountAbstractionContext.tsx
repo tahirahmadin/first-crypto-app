@@ -122,6 +122,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   const [web3Provider, setWeb3Provider] = useState<ethers.BrowserProvider>()
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+  const [isSafeDeployed, setIsSafeDeployed] = useState<boolean>(false)
 
   const chain = getChain(chainId) || initialChain
 
@@ -300,6 +301,10 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
           : await accountAbstractionKit?.protocolKit.getAddress()
 
         setSafeSelected(safeSelected || '')
+
+        const flag = await accountAbstractionKit?.protocolKit.isSafeDeployed()
+
+        setIsSafeDeployed(!flag ? false : flag)
       }
     }
 
