@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     // backgroundColor: "#ffffff",
 
     background: 'linear-gradient(to bottom, #D72B66, #D72B66)',
-    backgroundImage: `url(''), linear-gradient(#7A2C88, #EC1E79)`,
+    backgroundImage: `url(''), linear-gradient(#7A2C88, #5C6AC0)`,
     backgroundSize: 'cover',
     marginBottom: 5,
     paddingTop: 30,
@@ -379,7 +379,7 @@ export default function StrategyVotingComponent(props) {
             fontWeight={500}
             color={'#E4E4E2'}
             textAlign={'center'}
-            mt={3}
+            mt={1}
           >
             Voting will end in next 35 minutues
           </Typography>

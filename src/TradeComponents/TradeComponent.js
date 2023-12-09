@@ -15,7 +15,6 @@ import { getERC20Allowance } from 'src/utils/getERC20Info'
 import { FIRST_CRYPTO, TOKENS } from 'src/constants/addresses'
 import { BN, toWei } from 'src/utils/unitConverter'
 import GelatoTaskStatusLabel from 'src/components/gelato-task-status-label/GelatoTaskStatusLabel'
-import SafeInfo from 'src/components/safe-info/SafeInfo'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -213,13 +212,7 @@ const TradeComponent = () => {
         </Box>
       )}
       {isAuthenticated && (
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="flex-start"
-          paddingLeft="100px"
-          maxWidth={500}
-        >
+        <Box display="flex" flexDirection="column" alignItems="flex-start" maxWidth={440}>
           <Box display={'flex'} justifyContent={'flex-start'} alignItems={'center'} mb={1}>
             <Typography
               fontSize={12}

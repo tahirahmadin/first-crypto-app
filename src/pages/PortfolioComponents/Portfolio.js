@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
   summaryCardOther: {
     background: 'linear-gradient(to bottom, #464646, #464646)',
-    backgroundImage: `url(''), linear-gradient(#E5E4E2, #E5E4E2)`,
+    backgroundImage: `url(''), linear-gradient(#f9f9f9, #ffffff)`,
     backgroundSize: 'cover',
     marginBottom: 5,
     paddingTop: 10,
@@ -47,6 +47,27 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: '0px 12px 24px rgba(0, 0, 0, 0.03)',
     borderRadius: '1rem'
   },
+  summaryCardBalance: {
+    // backgroundColor: "#ffffff",
+
+    background: 'linear-gradient(to bottom, #D72B66, #D72B66)',
+    backgroundImage: `url(''), linear-gradient(#f9f9f9, #ffffff)`,
+    backgroundSize: 'cover',
+    marginBottom: 5,
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 14,
+    paddingRight: 14,
+    width: '100%',
+    height: '100%',
+    minHeight: 100,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    boxShadow: '0px 12px 24px rgba(0, 0, 0, 0.03)',
+    borderRadius: '1rem'
+  },
+
   summaryCard: {
     // backgroundColor: "#ffffff",
 
@@ -225,7 +246,7 @@ export default function Portfolio() {
 
   return (
     <Box>
-      <Box className={classes.summaryCard}>
+      <Box className={classes.summaryCardBalance}>
         <Box
           display={'flex'}
           flexDirection={'row'}
@@ -234,7 +255,7 @@ export default function Portfolio() {
         >
           <img
             src={
-              'https://as1.ftcdn.net/v2/jpg/05/99/32/28/1000_F_599322870_hufBazDahX69a57xhcprgfn4WSjAlXZj.jpg'
+              'https://img.freepik.com/premium-vector/cute-wizard-investment-cryptocurrency-fairytale-avatar-character-cartoon-illustration_357749-1173.jpg?w=2000'
             }
             height="80px"
             width="80px"
@@ -251,7 +272,7 @@ export default function Portfolio() {
               variant="body2"
               fontSize={12}
               fontWeight={400}
-              color={'#ffffff'}
+              color={'#000000'}
               textAlign={'center'}
               alignItems={'center'}
             >
@@ -263,7 +284,7 @@ export default function Portfolio() {
               variant="h3"
               fontSize={32}
               fontWeight={600}
-              color={'#ffffff'}
+              color={'#000000'}
               textAlign={'center'}
               alignItems={'center'}
               pt={1}
@@ -274,7 +295,7 @@ export default function Portfolio() {
               variant="caption"
               fontSize={12}
               fontWeight={300}
-              color={'#ffd54f'}
+              color={'#f7931a'}
               textAlign={'center'}
               alignItems={'center'}
             >
@@ -301,7 +322,7 @@ export default function Portfolio() {
               variant="body2"
               fontSize={16}
               fontWeight={400}
-              color={'#ffffff'}
+              color={'#000000'}
               textAlign={'center'}
               alignItems={'center'}
             >
@@ -313,7 +334,7 @@ export default function Portfolio() {
             variant="h6"
             fontSize={16}
             fontWeight={600}
-            color={'#ffffff'}
+            color={'#414141'}
             textAlign={'center'}
             alignItems={'center'}
             pt={0.5}
@@ -321,7 +342,7 @@ export default function Portfolio() {
             tahirahmad.in@axl
           </Typography>
           <Button
-            style={{ backgroundColor: 'white', color: 'black', width: 'fit-content', height: 30 }}
+            style={{ backgroundColor: '#e5e5e5', color: 'black', width: 'fit-content', height: 30 }}
           >
             <Typography
               onClick={() => setShowUPI(!showUPI)}
@@ -340,13 +361,13 @@ export default function Portfolio() {
         <Chart options={chartData.options} series={chartData.series} type="line" width="500" />
       </div> */}
       {showUPI && (
-        <Box className={classes.summaryCard}>
+        <Box className={classes.summaryCardBalance}>
           <Box mt={1} className={classes.inputWrapper}>
             <Typography
-              variant="subtitle2"
+              variant="h6"
               textAlign={'left'}
               lineHeight={1}
-              style={{ color: 'black', fontWeight: 600 }}
+              style={{ color: 'black', fontWeight: 600, fontSize: 16 }}
             >
               Your UPI Id to receive crypto payments:
             </Typography>
@@ -356,7 +377,7 @@ export default function Portfolio() {
               fullWidth
               placeholder="Enter your upi "
               disableUnderline
-              style={{ fontSize: 14, fontWeight: 400, color: '#f9f9f9' }}
+              style={{ fontSize: 14, fontWeight: 400, color: '#000000' }}
             />
             {!loading && (
               <Button
