@@ -107,9 +107,6 @@ export default function HistoryComponent({ setStep }) {
   const classes = useStyles()
   const theme = useTheme()
 
-  const { safeSelected } = useAccountAbstraction()
-  let accountSC = safeSelected
-
   const [userPositions, setUserPositions] = useState([])
 
   const { safeSelected, web3Provider, chainId } = useAccountAbstraction()
@@ -131,7 +128,7 @@ export default function HistoryComponent({ setStep }) {
   }, [safeSelected, web3Provider, chainId])
 
   const copyToClip = async () => {
-    await navigator.clipboard.writeText(accountSC)
+    await navigator.clipboard.writeText(safeSelected)
     alert('Wallet address is copied')
   }
   return (

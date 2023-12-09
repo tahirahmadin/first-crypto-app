@@ -213,6 +213,8 @@ export default function Portfolio() {
         data: [10, 12, 17, 19, 33, 28, 24, 44, 48]
       }
     ]
+  }
+
   const handleUpiUpdate = async () => {
     await updateUpiTransaction(upi)
     setLoading(true)
