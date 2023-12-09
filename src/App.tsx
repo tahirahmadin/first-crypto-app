@@ -54,7 +54,7 @@ function App() {
               </Grid>
               <Grid item md={3} sm={12} xs={12}>
                 <main style={{ flexGrow: 1 }}>
-                  {activeStep === 2 && <HistoryComponent setStep={setStep} />}
+                  {activeStep === 2 || (activeStep === 0 && <HistoryComponent setStep={setStep} />)}
                 </main>
               </Grid>
             </Grid>

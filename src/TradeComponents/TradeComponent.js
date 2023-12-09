@@ -213,7 +213,7 @@ const TradeComponent = () => {
       )}
       {isAuthenticated && (
         <Box display="flex" flexDirection="column" alignItems="flex-start" maxWidth={440}>
-          <Box display={'flex'} justifyContent={'flex-start'} alignItems={'center'} mb={1}>
+          {/* <Box display={'flex'} justifyContent={'flex-start'} alignItems={'center'} mb={1}>
             <Typography
               fontSize={12}
               fontWeight={600}
@@ -242,7 +242,7 @@ const TradeComponent = () => {
             >
               • Step 3: Accumulate token
             </Typography>
-          </Box>
+          </Box> */}
           <Box className={classes.card}>
             <Typography
               variant="body2"
