@@ -20,10 +20,12 @@
     "@waku/react": "^0.0.5-63a782d",
     "@waku/sdk": "^0.0.21",
     "@web3auth/safeauth-embed": "^0.0.0",
+    "apexcharts": "^3.44.2",
     "axios": "^1.6.2",
     "ethers": "^6.9.0",
     "protobufjs": "^7.2.5",
     "react": "^18.2.0",
+    "react-apexcharts": "^1.4.1",
     "react-code-blocks": "^0.1.5",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1"

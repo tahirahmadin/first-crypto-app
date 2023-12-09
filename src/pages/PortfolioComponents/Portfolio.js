@@ -118,6 +118,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Portfolio() {
   const classes = useStyles()
   const theme = useTheme()
+  const [totalPortfolio, setTotalPortfolio] = useState(12000)
   const [showUPI, setShowUPI] = useState(false)
   const [upi, setUPI] = useState('tahirahmad@ybl')
   const [activeTokens, setActiveTokens] = useState('tahirahmad@ybl')
@@ -201,19 +202,19 @@ export default function Portfolio() {
               color={'#ffffff'}
               textAlign={'center'}
               alignItems={'center'}
-              pt={0.5}
+              pt={1}
             >
-              $21,000
+              ${totalPortfolio}
             </Typography>
             <Typography
               variant="caption"
               fontSize={12}
               fontWeight={300}
-              color={'#e0e0e0'}
+              color={'#ffd54f'}
               textAlign={'center'}
               alignItems={'center'}
             >
-              Wallet Balance
+              Portfolio balance
             </Typography>
           </Box>
         </Box>
