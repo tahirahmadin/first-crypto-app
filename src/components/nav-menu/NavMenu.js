@@ -16,7 +16,6 @@ import {
   Savings
 } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
-import { getPositionInfo } from 'src/utils/getUserPosition'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { getERC20Info } from 'src/utils/getERC20Info'
 import { TOKENS } from 'src/constants/addresses'

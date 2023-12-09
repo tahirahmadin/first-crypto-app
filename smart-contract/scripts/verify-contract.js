@@ -7,10 +7,11 @@ async function main() {
   // verify rsi contract
 
   // latest deployed
-  // goerli : 0x8d5Ff28faDe46A2f41D38cC1854E11c958211792
+  // goerli : 0xcF1E289f63E9cc7BFA92bC2FAfD9E76A25b491Ce
   // scrollsepolia:   0x46b2b0eEfd25251f38f289e7a5F52D282D411FBD
   // arbitrum-goerli 421613 :0xF307473cb72BDcB6aDbeFDd82199ba316dA4F51e
-  const deployedAddress = '0x8d5Ff28faDe46A2f41D38cC1854E11c958211792'
+  // polygon:  0xe83C2b017449F5105656199bA34E40A646F96C33
+  const deployedAddress = '0xe83C2b017449F5105656199bA34E40A646F96C33'
 
   await hre.run('verify:verify', {
     address: deployedAddress,

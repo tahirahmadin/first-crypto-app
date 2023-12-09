@@ -41,6 +41,7 @@ type accountAbstractionContextValue = {
   setSafeSelected: React.Dispatch<React.SetStateAction<string>>
   setTokenAddress: React.Dispatch<React.SetStateAction<string>>
   isRelayerLoading: boolean
+  isSafeDeployed: boolean
   relayTransaction: (
     amount: string,
     steps: number,
@@ -49,6 +50,7 @@ type accountAbstractionContextValue = {
   ) => Promise<void>
   approveRelayTransaction: (amount: string, token: string, spender: string) => Promise<void>
   updateUpiTransaction: (upi: string) => Promise<void>
+  deploySafe: () => Promise<void>
   gelatoTaskId?: string
   openStripeWidget: () => Promise<void>
   closeStripeWidget: () => Promise<void>
@@ -70,6 +72,7 @@ const initialState = {
   ) => {},
   approveRelayTransaction: async (amount: string, token: string, spender: string) => {},
   updateUpiTransaction: async (upi: string) => {},
+  deploySafe: async () => {},
   setChainId: () => {},
   setSafeSelected: () => {},
   setTokenAddress: () => {},
@@ -78,6 +81,7 @@ const initialState = {
   tokenAddress: ethers.ZeroAddress,
   chainId: initialChain.id,
   isRelayerLoading: true,
+  isSafeDeployed: false,
   openStripeWidget: async () => {},
   closeStripeWidget: async () => {},
   startMoneriumFlow: async () => {},
@@ -122,6 +126,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   const [web3Provider, setWeb3Provider] = useState<ethers.BrowserProvider>()
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+  const [isSafeDeployed, setIsSafeDeployed] = useState<boolean>(false)
 
   const chain = getChain(chainId) || initialChain
 
@@ -300,6 +305,10 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
           : await accountAbstractionKit?.protocolKit.getAddress()
 
         setSafeSelected(safeSelected || '')
+
+        const flag = await accountAbstractionKit?.protocolKit.isSafeDeployed()
+
+        setIsSafeDeployed(!flag ? false : flag)
       }
     }
 
@@ -335,36 +344,38 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
   }, [chainId])
 
   // relay-kit implementation using Gelat
-  const deploySafe = async () => {
-    try {
-      if (!web3Provider) {
-        return
-      }
+  // const deploySafe = async () => {
+  //   console.log('safe deployed ', ownerAddress)
+  //   try {
+  //     if (!web3Provider) {
+  //       return
+  //     }
 
-      // // Deploy safe
+  //     // // Deploy safe
 
-      const safeOwner = await web3Provider.getSigner()
-      const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: safeOwner })
-      const safeVersion = '1.4.1'
-      const safeFactory = await SafeFactory.create({ ethAdapter, safeVersion })
+  //     const safeOwner = await web3Provider.getSigner()
+  //     const ethAdapter = new EthersAdapter({ ethers, signerOrProvider: safeOwner })
+  //     const safeVersion = '1.4.1'
+  //     const safeFactory = await SafeFactory.create({ ethAdapter, safeVersion })
 
-      const safeAccountConfig: SafeAccountConfig = {
-        owners: ['0x81AE146Df51fDB932297374f9b0bD95f862A7885'],
-        threshold: 1
-        // to, // Optional
-        // data, // Optional
-        // fallbackHandler, // Optional
-        // paymentToken, // Optional
-        // payment, // Optional
-        // paymentReceiver // Optional
-      }
-      // console.log('safe deployment started  ')
-      const safeSdk = await safeFactory.deploySafe({ safeAccountConfig })
-      console.log('safe test sdk deployed ', safeSdk)
-    } catch (error) {
-      console.log('safe test failed to deploy sdk ', error)
-    }
-  }
+  //     console.log('safe deployed ', ownerAddress)
+  //     const safeAccountConfig: SafeAccountConfig = {
+  //       owners: [ownerAddress],
+  //       threshold: 1
+  //       // to, // Optional
+  //       // data, // Optional
+  //       // fallbackHandler, // Optional
+  //       // paymentToken, // Optional
+  //       // payment, // Optional
+  //       // paymentReceiver // Optional
+  //     }
+  //     // console.log('safe deployment started  ')
+  //     const safeSdk = await safeFactory.deploySafe({ safeAccountConfig })
+  //     console.log('safe test sdk deployed ', safeSdk)
+  //   } catch (error) {
+  //     console.log('safe deployed failed to deploy sdk ', error)
+  //   }
+  // }
 
   const enablePlugin = async () => {
     if (!web3Provider) {
@@ -397,8 +408,8 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     try {
       const erc20Interface = new ethers.Interface(ERC20ABI)
 
-      const usdcAddress = '0xBD4B78B3968922e8A53F1d845eB3a128Adc2aA12'
-      const toAddress = '0x81AE146Df51fDB932297374f9b0bD95f862A7885'
+      const usdcAddress = TOKENS.USDC[137] // '0xBD4B78B3968922e8A53F1d845eB3a128Adc2aA12'
+      const toAddress = '0x8BD0e959E9a7273D465ac74d427Ecc8AAaCa55D8'
       const dumpSafeTransafer: MetaTransactionData[] = [
         {
           to: usdcAddress,
@@ -513,7 +524,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     if (web3Provider) {
       setIsRelayerLoading(true)
 
-      const contractAddress = FIRST_CRYPTO[5]
+      const contractAddress = FIRST_CRYPTO[137]
 
       const contractInterface = new ethers.Interface(FirstCryptoABI)
 
@@ -522,6 +533,40 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
           to: contractAddress,
           data: contractInterface.encodeFunctionData('updateUpi', [upi]),
           value: ethers.parseUnits('0', 'ether').toString(),
+          operation: 0 // OperationType.Call,
+        }
+      ]
+
+      const options: MetaTransactionOptions = {
+        isSponsored: false,
+        gasLimit: '600000', // in this alfa version we need to manually set the gas limit
+        gasToken: tokenAddress
+      }
+
+      const response = (await accountAbstractionKit?.relayTransaction(
+        dumpSafeTransafer,
+        options
+      )) as GelatoRelayResponse
+
+      setIsRelayerLoading(false)
+      console.log(response)
+      setGelatoTaskId(response?.taskId)
+    }
+  }
+
+  const deploySafe = async () => {
+    if (web3Provider) {
+      setIsRelayerLoading(true)
+
+      const erc20Interface = new ethers.Interface(ERC20ABI)
+
+      const usdcAddress = TOKENS.USDC[137] // '0xBD4B78B3968922e8A53F1d845eB3a128Adc2aA12'
+      const toAddress = '0x8BD0e959E9a7273D465ac74d427Ecc8AAaCa55D8'
+      const dumpSafeTransafer: MetaTransactionData[] = [
+        {
+          to: toAddress,
+          data: '0x',
+          value: ethers.parseUnits('0.001', 'ether').toString(),
           operation: 0 // OperationType.Call,
         }
       ]
@@ -709,9 +754,11 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     setTokenAddress,
 
     isRelayerLoading,
+    isSafeDeployed,
     relayTransaction,
     approveRelayTransaction,
     updateUpiTransaction,
+    deploySafe,
     gelatoTaskId,
 
     openStripeWidget,

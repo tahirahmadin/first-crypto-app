@@ -13,6 +13,8 @@ import {
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { getPositionInfo } from 'src/utils/getUserPosition'
 import GelatoTaskStatusLabel from 'src/components/gelato-task-status-label/GelatoTaskStatusLabel'
+import AddressLabel from 'src/components/address-label/AddressLabel'
+import { CURRENT_CHAIN } from 'src/constants/addresses'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -149,17 +151,40 @@ export default function Portfolio() {
   const [activeTokens, setActiveTokens] = useState('tahirahmad@ybl')
   const [loading, setLoading] = useState(false)
 
-  const { safeSelected, updateUpiTransaction, isRelayerLoading, gelatoTaskId } =
-    useAccountAbstraction()
+  const {
+    safeSelected,
+    updateUpiTransaction,
+    isRelayerLoading,
+    gelatoTaskId,
+    ownerAddress,
+    web3Provider,
+    chainId,
+    chain
+  } = useAccountAbstraction()
   const [transactionHash, setTransactionHash] = useState('')
 
-  let accountSC = '0x87228Dd1eca832d14f4aB0CFb99c471195E7f6dB'
+  const [userUPI, setUserUPI] = useState(null)
+
+  useEffect(() => {
+    console.log('data loaded 1')
+    if (!safeSelected || !web3Provider) {
+      return
+    }
+    console.log('data loaded 2')
+    async function load() {
+      const data = await getPositionInfo(web3Provider, CURRENT_CHAIN, safeSelected)
+      console.log('data loaded ', data)
+      setUserUPI(data.userUpi)
+    }
+
+    load()
+  }, [safeSelected, web3Provider])
 
   // Fetch Balances of user
   useEffect(() => {
     if (safeSelected) {
       async function asyncFn() {
-        let balancesData = await getTokenBalancesOfWalletAddress(accountSC)
+        let balancesData = await getTokenBalancesOfWalletAddress(safeSelected)
 
         if (balancesData) {
           const filteredData = Object.keys(balancesData)
@@ -254,6 +279,7 @@ export default function Portfolio() {
           alignItems={'center'}
         >
           <img
+            alt="dat"
             src={
               'https://img.freepik.com/premium-vector/cute-wizard-investment-cryptocurrency-fairytale-avatar-character-cartoon-illustration_357749-1173.jpg?w=2000'
             }
@@ -268,7 +294,7 @@ export default function Portfolio() {
             justifyContent={'space-around'}
             alignItems={'flex-start'}
           >
-            <Typography
+            {/* <Typography
               variant="body2"
               fontSize={12}
               fontWeight={400}
@@ -279,7 +305,8 @@ export default function Portfolio() {
               {safeSelected?.slice(0, 8)}
               {'... '} {safeSelected?.slice(-8)}
               <CopyAll onClick={copyToClip} style={{ cursor: 'pointer' }} />
-            </Typography>
+            </Typography> */}
+            {ownerAddress && <AddressLabel address={ownerAddress} showBlockExplorerLink />}
             <Typography
               variant="h3"
               fontSize={32}
@@ -317,7 +344,11 @@ export default function Portfolio() {
             justifyContent={'space-around'}
             alignItems={'flex-end'}
           >
-            <img src="https://cedge.in/wp-content/uploads/2017/11/upi-1.png" height="24px" />
+            <img
+              alt="dad"
+              src="https://cedge.in/wp-content/uploads/2017/11/upi-1.png"
+              height="24px"
+            />
             <Typography
               variant="body2"
               fontSize={16}
@@ -339,7 +370,7 @@ export default function Portfolio() {
             alignItems={'center'}
             pt={0.5}
           >
-            tahirahmad.in@axl
+            {userUPI ? userUPI : 'example@ybl'}
           </Typography>
           <Button
             style={{ backgroundColor: '#e5e5e5', color: 'black', width: 'fit-content', height: 30 }}

@@ -15,7 +15,8 @@ module.exports = {
     apiKey: {
       goerli: process.env.etherscan_goerli,
       scrollSepolia: 'WPDBQAUENJ3I3JTDIJNV8AMF5F7G6F926N',
-      arbitrumGoerli: 'CC5V3EGGSA1WYTM152F75BIVB33WN7FT3V'
+      arbitrumGoerli: 'CC5V3EGGSA1WYTM152F75BIVB33WN7FT3V',
+      polygon: '3D8B45QBXTFRGM1FV7D5GCXQRZHEIA59IZ'
     },
     //  "36QV5RR1WHHYWBH81P4V3KY2DKCZ7RR4ZH", // "2X7YUM8RI1H8JM3BCSAEFQ2SH5V34QVRDA",
     customChains: [
@@ -67,11 +68,10 @@ module.exports = {
   defaultNetwork: 'hardhat',
 
   networks: {
-    maticmain: {
+    polygon: {
       url: 'https://polygon-rpc.com/',
       accounts: [process.env.private_key],
-      gas: 3000000, // <--- Twice as much
-      gasPrice: 800000000000,
+
       timeout: 999999
     },
     matictest: {

@@ -4,13 +4,16 @@ import firstCryptoAbi from '../constants/abis/firstCrypto.json'
 
 export const getPositionInfo = async (
   provider: ethers.BrowserProvider,
+  chainId: number,
   accountAddress?: string
 ): Promise<any> => {
-  const contract = new ethers.Contract(FIRST_CRYPTO[5], firstCryptoAbi, provider)
+  console.log('data loaded fetch ', { provider, chainId, accountAddress })
+  const contract = new ethers.Contract(FIRST_CRYPTO?.[chainId], firstCryptoAbi, provider)
 
-  const [depositBalance, orders] = await Promise.all([
-    contract.userTokenBalances(accountAddress, TOKENS.USDC[5]),
-    contract.getUserOrders(accountAddress, TOKENS.USDC[5])
+  const [depositBalance, orders, userUpi] = await Promise.all([
+    contract.userTokenBalances(accountAddress, TOKENS.USDC?.[chainId]),
+    contract.getUserOrders(accountAddress, TOKENS.USDC?.[chainId]),
+    contract.addressToUpi(accountAddress)
   ])
 
   const formattedOrders = orders?.map((ele: any) => {
@@ -28,5 +31,5 @@ export const getPositionInfo = async (
     }
   })
 
-  return { depositBalance: depositBalance?.toString(), formattedOrders }
+  return { depositBalance: depositBalance?.toString(), formattedOrders, userUpi }
 }
