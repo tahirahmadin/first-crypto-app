@@ -10,6 +10,7 @@ import {
 import { makeStyles } from '@mui/styles'
 import { Box, Button, Typography, useTheme } from '@mui/material'
 import { Cancel, CheckCircle, ThumbDownAlt, ThumbUpAlt } from '@mui/icons-material'
+import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -132,7 +133,8 @@ export default function StrategyVotingComponent(props) {
     node,
     decoder
   })
-  let accountSC = '0x9D7117a07fca9F22911d379A9fd5118A5FA4F448'
+  const { safeSelected } = useAccountAbstraction()
+  let accountSC = safeSelected ? safeSelected : '0x9D7117a07fca9F22911d379A9fd5118A5FA4F448'
 
   const { messages: filterMessages } = useFilterMessages({ node, decoder })
 
@@ -304,7 +306,7 @@ export default function StrategyVotingComponent(props) {
             which requires you to vote using Waku Communications
           </Typography>
 
-          {voteType === '1' ? (
+          {voteType === '1' && (
             <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
               <CheckCircle style={{ color: '#81c784' }} />
               <Typography
@@ -317,7 +319,8 @@ export default function StrategyVotingComponent(props) {
                 SUPPORTED!
               </Typography>
             </Box>
-          ) : (
+          )}
+          {voteType === '2' && (
             <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
               <Cancel style={{ color: 'red' }} />
               <Typography
