@@ -189,11 +189,11 @@ export default function HistoryComponent({ setStep }) {
                   alignItems={'flex-start'}
                 >
                   <Typography fontSize={12} fontWeight={600} color={'#272727'} textAlign={'center'}>
-                    DCA for {fromWei(position?.depositAmount?.toString(), 6)}
+                    DCA for ${fromWei(position?.depositAmount?.toString(), 6)}
                   </Typography>
                   <Typography
                     variant="caption"
-                    fontSize={12}
+                    fontSize={10}
                     fontWeight={400}
                     color={'#272727'}
                     textAlign={'center'}

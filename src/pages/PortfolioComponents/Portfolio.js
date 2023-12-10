@@ -148,6 +148,9 @@ export default function Portfolio() {
   const [totalPortfolio, setTotalPortfolio] = useState(695)
   const [showUPI, setShowUPI] = useState(false)
   const [upi, setUPI] = useState('youname@bankId')
+  const [pricesData, setPricesData] = useState(null)
+  const [tokensData, setTokensData] = useState(null)
+  const [balancesData, setBalancesData] = useState(null)
   const [activeTokens, setActiveTokens] = useState('tahirahmad@ybl')
   const [loading, setLoading] = useState(false)
 
@@ -184,13 +187,13 @@ export default function Portfolio() {
   useEffect(() => {
     if (safeSelected) {
       async function asyncFn() {
-        let balancesData = await getTokenBalancesOfWalletAddress(safeSelected)
+        let balancesDataTemp = await getTokenBalancesOfWalletAddress(safeSelected)
 
-        if (balancesData) {
-          const filteredData = Object.keys(balancesData)
-            .filter((key) => parseInt(balancesData[key]) > 0)
+        if (balancesDataTemp) {
+          const filteredData = Object.keys(balancesDataTemp)
+            .filter((key) => parseInt(balancesDataTemp[key]) > 0)
             .reduce((obj, key) => {
-              obj[key] = balancesData[key]
+              obj[key] = balancesDataTemp[key]
 
               return obj
             }, {})
@@ -198,9 +201,19 @@ export default function Portfolio() {
           // console.log('tempAddresses')
           // console.log(tempAddresses)
           // let tokensData = await getTokenDetailsByAddresses(tempAddresses)
-          let pricesData = await getSpotPriceOfTokensByAddresses(tempAddresses.toString())
-          // let portfolioData = await getPortfolioGrowthChartByAddress(tempAddresses)
 
+          // let portfolioData = await getPortfolioGrowthChartByAddress(tempAddresses)
+          setTimeout(async () => {
+            let pricesDataTemp = await getSpotPriceOfTokensByAddresses(tempAddresses.toString())
+            console.log(pricesDataTemp)
+            setPricesData(pricesDataTemp)
+          }, 1500)
+
+          setTimeout(async () => {
+            let tokenDataTemp = await getTokenDetailsByAddresses(tempAddresses.toString())
+            console.log(tokenDataTemp)
+            setTokensData(tokenDataTemp)
+          }, 3000)
           setActiveTokens(filteredData)
           console.log(filteredData)
         }

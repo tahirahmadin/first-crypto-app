@@ -40,7 +40,7 @@ export const getTokenDetailsByAddresses = async (addresses) => {
 
 // Get spot price of tokens by addresses
 export const getSpotPriceOfTokensByAddresses = async (addresses) => {
-  let callUrl = `https://api.1inch.dev/price/v1.1/137/0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174,0x67eb41a14c0fe5cd701fc9d5a3d6597a72f641a6`
+  let callUrl = `https://api.1inch.dev/price/v1.1/137/${addresses.toString()}`
   const url = `http://localhost:5002/?url=${callUrl}`
 
   const config = {
