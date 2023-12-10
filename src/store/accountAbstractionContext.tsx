@@ -20,7 +20,7 @@ import isMoneriumRedirect from 'src/utils/isMoneriumRedirect'
 import { SafeFactory } from '@safe-global/protocol-kit'
 import { ERC20ABI } from './abi'
 import FirstCryptoABI from '../constants/abis/firstCrypto.json'
-import { FIRST_CRYPTO, TOKENS } from 'src/constants/addresses'
+import { CURRENT_CHAIN, FIRST_CRYPTO, TOKENS } from 'src/constants/addresses'
 import { BN, toWei } from 'src/utils/unitConverter'
 
 type accountAbstractionContextValue = {
@@ -37,6 +37,8 @@ type accountAbstractionContextValue = {
   setChainId: (chainId: string) => void
   safeSelected?: string
   safeBalance?: string
+  tokenBalance?: string
+  wethBalance?: string
   erc20Balances?: Record<string, ERC20Token>
   setSafeSelected: React.Dispatch<React.SetStateAction<string>>
   setTokenAddress: React.Dispatch<React.SetStateAction<string>>
@@ -251,6 +253,26 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     })()
   }, [web3Provider, safeSelected])
 
+  const [tokenBalance, setTokenBalance] = useState('0')
+
+  const [wethBalance, setWethBalance] = useState('200000000000000000')
+
+  useEffect(() => {
+    if (!safeSelected || !web3Provider) {
+      return
+    }
+
+    async function load() {
+      const data: any = await getERC20Info(TOKENS?.USDC[CURRENT_CHAIN], web3Provider, safeSelected)
+      setTokenBalance(data?.balance)
+    }
+
+    load()
+    setInterval(() => {
+      load()
+    }, 60000)
+  }, [safeSelected, web3Provider])
+
   const startMoneriumFlow = useCallback(
     async (authCode?: string, refreshToken?: string) => {
       if (!moneriumPack) return
@@ -408,7 +430,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     try {
       const erc20Interface = new ethers.Interface(ERC20ABI)
 
-      const usdcAddress = TOKENS.USDC[137] // '0xBD4B78B3968922e8A53F1d845eB3a128Adc2aA12'
+      const usdcAddress = TOKENS.USDC[CURRENT_CHAIN] // '0xBD4B78B3968922e8A53F1d845eB3a128Adc2aA12'
       const toAddress = '0x8BD0e959E9a7273D465ac74d427Ecc8AAaCa55D8'
       const dumpSafeTransafer: MetaTransactionData[] = [
         {
@@ -524,7 +546,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     if (web3Provider) {
       setIsRelayerLoading(true)
 
-      const contractAddress = FIRST_CRYPTO[137]
+      const contractAddress = FIRST_CRYPTO[CURRENT_CHAIN]
 
       const contractInterface = new ethers.Interface(FirstCryptoABI)
 
@@ -560,7 +582,6 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
       const erc20Interface = new ethers.Interface(ERC20ABI)
 
-      const usdcAddress = TOKENS.USDC[137] // '0xBD4B78B3968922e8A53F1d845eB3a128Adc2aA12'
       const toAddress = '0x8BD0e959E9a7273D465ac74d427Ecc8AAaCa55D8'
       const dumpSafeTransafer: MetaTransactionData[] = [
         {
@@ -597,7 +618,7 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
     if (web3Provider) {
       setIsRelayerLoading(true)
 
-      const contractAddress = FIRST_CRYPTO[5] //'0x78ccc7e50c7fda32CdbAa75D60EccB182cFC45C6'
+      const contractAddress = FIRST_CRYPTO[CURRENT_CHAIN] //'0x78ccc7e50c7fda32CdbAa75D60EccB182cFC45C6'
       const inputToken = fromToken //TOKENS.USDC[5] //'0xBD4B78B3968922e8A53F1d845eB3a128Adc2aA12'
       const inputAmount = toWei(amount?.toString(), 6) //'10000000'
 
@@ -749,6 +770,8 @@ const AccountAbstractionProvider = ({ children }: { children: JSX.Element }) => 
 
     safeSelected,
     safeBalance,
+    tokenBalance,
+    wethBalance,
     erc20Balances,
     setSafeSelected,
     setTokenAddress,

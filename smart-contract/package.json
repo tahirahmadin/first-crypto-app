@@ -4,9 +4,9 @@
   "scripts": {
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
-    "deploy-contract": "hardhat run --network polygon scripts/deploy-contract.js",
+    "deploy-contract": "hardhat run --network mentle scripts/deploy-contract.js",
     "deploy-mock": "hardhat run --network arbitrum_goerli scripts/deployMocks.js",
-    "verify-contract": "hardhat run --network polygon scripts/verify-contract.js",
+    "verify-contract": "hardhat run --network mentle scripts/verify-contract.js",
     "clean": "hardhat clean",
     "solhint": "./node_modules/.bin/solhint -f table contracts/**/*.sol",
     "lint": "eslint --",

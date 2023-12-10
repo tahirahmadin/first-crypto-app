@@ -11,7 +11,7 @@ import { ERC20Token } from 'src/models/erc20token'
  */
 export const getERC20Info = async (
   erc20Address: string,
-  provider: ethers.BrowserProvider,
+  provider: any,
   accountAddress?: string
 ): Promise<ERC20Token | undefined> => {
   if (erc20Address === ethers.ZeroAddress) {

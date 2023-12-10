@@ -16,7 +16,7 @@ const { batchTransfer, updateOrders } = require('./Transaction')
 exports.initScheduledJobs = async () => {
   console.log('starting cron srevice')
   // cron job runs on every 1 minute to filter orders to execute based on current price
-  const schedule = !process.env.CRON_SCHEDULE ? '*/5 * * * *' : process.env.CRON_SCHEDULE
+  const schedule = '*/3 * * * *' //!process.env.CRON_SCHEDULE ? '*/3 * * * *' : process.env.CRON_SCHEDULE
   const scheduledJobFunction = CronJob.schedule(schedule, async () => {
     console.log('add scheduled jobs here')
 
@@ -31,7 +31,7 @@ exports.initScheduledJobs = async () => {
 
     // 1. fetch pending orders
     const currentChainId = process.env.CURRENT_CHAIN
-    const toTokenAddress = TOKENS[137].WBTC
+    const toTokenAddress = TOKENS?.[currentChainId].WBTC
 
     console.log('current chain id ', currentChainId)
 
@@ -45,12 +45,8 @@ exports.initScheduledJobs = async () => {
     }
 
     const orderIds = pendingOrders?.map((ele) => ele?.orderId)
-    const users = [
-      '0xac113A863e871Ca007dD1be8BE12563602502A6D',
-      '0x9d1599C943AaDb3c0A1964d159113dF913E08f64',
-      '0x9B3097aA7CDD9ee9FE34b39056Eb2d9855D21014'
-    ] // pendingOrders?.map((ele) => ele?.user)
-    const inputAmounts = ['10', '20', '10'] //pendingOrders?.map((ele) => ele?.fiatOrderAmount)
+    const users = pendingOrders?.map((ele) => ele?.user)
+    const inputAmounts = pendingOrders?.map((ele) => ele?.fiatOrderAmount)
 
     console.log('details ', { orderIds, users, inputAmounts })
 
@@ -61,36 +57,36 @@ exports.initScheduledJobs = async () => {
     const fromToken = pendingOrders[0]?.tokenAddress
 
     // 3. run the swap on fusion api: mainnet only
-    // const maxRetries = 5
-    // const delay = 10000
-    // const fusionOrder = await createFusionOrderWithRetry(
-    //   currentChainId,
-    //   fromToken,
-    //   toTokenAddress,
-    //   totalInputAmount,
-    //   maxRetries,
-    //   delay
-    // )
+    const maxRetries = 5
+    const delay = 10000
+    const fusionOrder = await createFusionOrderWithRetry(
+      currentChainId,
+      fromToken,
+      toTokenAddress,
+      totalInputAmount,
+      maxRetries,
+      delay
+    )
 
     // 4. wait for fusion order success and find recieved token amounts: mainnet  only
-    // const orderHash = fusionOrder?.orderHash
-    // if (!orderHash) {
-    //   console.log('failed to create fusion order retry in 10 seconds...')
-    // }
+    const orderHash = fusionOrder?.orderHash
+    if (!orderHash) {
+      console.log('failed to create fusion order retry in 10 seconds...')
+    }
 
     // 4. wait for fusion order success and find recieved token amounts
-    // const fusionOrderStatus = await watchOrderStatus(orderHash)
-    // console.log('Fusion order filled 🍺')
+    const fusionOrderStatus = await watchOrderStatus(orderHash)
+    console.log('Fusion order filled 🍺')
 
     // 5. devide recieved tokens based on ratio of input tokens and prepare aaray for batch transfer
-    const takingAmount = '293' //fusionOrderStatus?.order?.takingAmount
+    const takingAmount = fusionOrderStatus?.order?.takingAmount
 
     const amountsToSend = distributeValue(toWei(takingAmount, 5), inputAmounts)
     console.log('takingAmount ', takingAmount)
     console.log('distributed amounts ', amountsToSend)
 
     // 6. run batch transfer to send tokens back to users.
-    // await runBatchTransfer(users, amountsToSend, TOKENS[5].USDC, currentChainId)
+    await runBatchTransfer(users, amountsToSend, TOKENS[5].USDC, currentChainId)
 
     // 7. update order status on smart contract
     await updateOrders(orderIds, currentChainId)

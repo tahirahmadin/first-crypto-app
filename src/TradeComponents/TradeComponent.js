@@ -12,7 +12,7 @@ import {
 import { makeStyles } from '@mui/styles'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { getERC20Allowance } from 'src/utils/getERC20Info'
-import { FIRST_CRYPTO, TOKENS } from 'src/constants/addresses'
+import { CURRENT_CHAIN, FIRST_CRYPTO, TOKENS } from 'src/constants/addresses'
 import { BN, toWei } from 'src/utils/unitConverter'
 import GelatoTaskStatusLabel from 'src/components/gelato-task-status-label/GelatoTaskStatusLabel'
 
@@ -124,8 +124,8 @@ const TradeComponent = () => {
   // const [totalValue, setTotalValue] = useState(0)
   // const [approved, setApproved] = useState(false)
 
-  const selectedInputToken = TOKENS.USDC[5]
-  const selectedContract = FIRST_CRYPTO[5]
+  const selectedInputToken = TOKENS.USDC[CURRENT_CHAIN]
+  const selectedContract = FIRST_CRYPTO[CURRENT_CHAIN]
 
   const {
     relayTransaction,
@@ -172,7 +172,7 @@ const TradeComponent = () => {
     }
   }, [allowanceAmount, totalValue])
   useEffect(() => {
-    console.log('safe test allowance ', totalValue)
+    console.log('safe test allowance ', allowanceAmount)
 
     if (safeSelected) {
       checkAllowance()
@@ -180,7 +180,8 @@ const TradeComponent = () => {
   }, [safeSelected, refetch, isAuthenticated])
 
   const handleApprove = async () => {
-    approveRelayTransaction('10000000000', selectedInputToken, selectedContract)
+    console.log('safe test allowance ', { selectedInputToken, selectedContract })
+    approveRelayTransaction('100000000', selectedInputToken, selectedContract)
   }
 
   const handleStake = async () => {

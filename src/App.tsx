@@ -44,7 +44,7 @@ function App() {
               <Grid item md={3} sm={12} xs={12}>
                 <NavMenu setStep={setStep} activeStep={activeStep} />
               </Grid>
-              <Grid item md={6} sm={12} xs={12} display={'flex'} justifyContent={'center'}>
+              <Grid item md={6} sm={12} xs={12}>
                 <main style={{ flexGrow: 1 }}>
                   {activeStep === 0 && <TradeComponent />}
                   {activeStep === 1 && <VoteComponent />}

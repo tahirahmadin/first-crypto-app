@@ -14,7 +14,9 @@ import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { getPositionInfo } from 'src/utils/getUserPosition'
 import GelatoTaskStatusLabel from 'src/components/gelato-task-status-label/GelatoTaskStatusLabel'
 import AddressLabel from 'src/components/address-label/AddressLabel'
-import { CURRENT_CHAIN } from 'src/constants/addresses'
+import { CURRENT_CHAIN, TOKENS } from 'src/constants/addresses'
+import { getERC20Info } from 'src/utils/getERC20Info'
+import { fromWei } from 'src/utils/unitConverter'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -145,7 +147,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Portfolio() {
   const classes = useStyles()
   const theme = useTheme()
-  const [totalPortfolio, setTotalPortfolio] = useState(695)
+  const [totalPortfolio, setTotalPortfolio] = useState(860)
   const [showUPI, setShowUPI] = useState(false)
   const [upi, setUPI] = useState('youname@bankId')
   const [activeTokens, setActiveTokens] = useState('tahirahmad@ybl')
@@ -159,9 +161,30 @@ export default function Portfolio() {
     ownerAddress,
     web3Provider,
     chainId,
-    chain
+    chain,
+    tokenBalance,
+    wethBalance
   } = useAccountAbstraction()
   const [transactionHash, setTransactionHash] = useState('')
+
+  // const [tokenBalances, setTokenBalances] = useState([0, 0])
+
+  // useEffect(() => {
+  //   if (!safeSelected || !web3Provider || !chainId) {
+  //     return
+  //   }
+  //   async function load() {
+  //     const data = await getERC20Info(TOKENS?.USDC[CURRENT_CHAIN], web3Provider, safeSelected)
+
+  //     console.log('balance test ', { data })
+  //     setTokenBalances([data.balance, 0])
+  //   }
+
+  //   load()
+  //   setInterval(() => {
+  //     load()
+  //   }, 60000)
+  // }, [safeSelected, web3Provider, chainId])
 
   const [userUPI, setUserUPI] = useState(null)
 
@@ -514,7 +537,7 @@ export default function Portfolio() {
                 color={'#272727'}
                 textAlign={'center'}
               >
-                $120
+                {fromWei(tokenBalance, 6)}
               </Typography>
               <Typography
                 variant="caption"
@@ -523,7 +546,7 @@ export default function Portfolio() {
                 color={'#757575'}
                 textAlign={'center'}
               >
-                $120
+                $ {fromWei(tokenBalance, 6)}
               </Typography>
             </Box>
           </Box>
@@ -588,7 +611,7 @@ export default function Portfolio() {
                 color={'#272727'}
                 textAlign={'center'}
               >
-                0.25
+                {fromWei(wethBalance, 18)}
               </Typography>
               <Typography
                 variant="caption"
@@ -597,7 +620,7 @@ export default function Portfolio() {
                 color={'#757575'}
                 textAlign={'center'}
               >
-                $575
+                ${fromWei(wethBalance, 18) * 2300}
               </Typography>
             </Box>
           </Box>

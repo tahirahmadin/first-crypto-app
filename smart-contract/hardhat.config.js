@@ -93,6 +93,11 @@ module.exports = {
       url: 'https://endpoints.omniatech.io/v1/arbitrum/goerli/public',
       accounts: [process.env.private_key],
       timeout: 999999
+    },
+    mentle: {
+      url: 'https://rpc.testnet.mantle.xyz',
+      accounts: [process.env.private_key],
+      timeout: 999999
     }
   }
 }

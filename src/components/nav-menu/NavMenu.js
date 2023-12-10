@@ -18,7 +18,7 @@ import {
 import { useEffect, useState } from 'react'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
 import { getERC20Info } from 'src/utils/getERC20Info'
-import { TOKENS } from 'src/constants/addresses'
+import { CURRENT_CHAIN, TOKENS } from 'src/constants/addresses'
 import { fromWei } from 'src/utils/unitConverter'
 
 const useStyles = makeStyles((theme) => ({
@@ -68,23 +68,23 @@ const NavMenu = ({ setStep, activeStep }) => {
   const theme = useTheme()
   const md = useMediaQuery(theme.breakpoints.down('md'))
 
-  const [tokenBalance, setTokenBalance] = useState('0')
-  const { safeSelected, web3Provider, chainId, logoutWeb3Auth } = useAccountAbstraction()
+  // const [tokenBalance, setTokenBalance] = useState('0')
+  const { safeSelected, web3Provider, logoutWeb3Auth, tokenBalance } = useAccountAbstraction()
 
-  useEffect(() => {
-    if (!safeSelected || !web3Provider || !chainId) {
-      return
-    }
-    async function load() {
-      const data = await getERC20Info(TOKENS?.USDC[5], web3Provider, safeSelected)
-      setTokenBalance(data?.balance)
-    }
+  // useEffect(() => {
+  //   if (!safeSelected || !web3Provider) {
+  //     return
+  //   }
+  //   async function load() {
+  //     const data = await getERC20Info(TOKENS?.USDC[CURRENT_CHAIN], web3Provider, safeSelected)
+  //     setTokenBalance(data?.balance)
+  //   }
 
-    load()
-    setInterval(() => {
-      load()
-    }, 60000)
-  }, [safeSelected, web3Provider, chainId])
+  //   load()
+  //   setInterval(() => {
+  //     load()
+  //   }, 60000)
+  // }, [safeSelected, web3Provider])
 
   const disconnect = async () => {
     logoutWeb3Auth()
@@ -139,7 +139,7 @@ const NavMenu = ({ setStep, activeStep }) => {
                 fontWeight: 600
               }}
             >
-              $ {fromWei(tokenBalance, 6)} USDC
+              $ {fromWei(tokenBalance, 6)}
             </Typography>
 
             <Typography variant="caption" style={{ color: '#414141', lineHeight: 1 }}>
