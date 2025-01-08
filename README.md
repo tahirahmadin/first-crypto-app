@@ -2,7 +2,7 @@
 
 **FirstCrypto** is a revolutionary financial application built on blockchain, designed specifically for millennials. By removing technical complexities, FirstCrypto makes investing, managing, and using cryptocurrency as seamless as possible.
 
-![FirstCrypto Logo](./header.png)
+![FirstCrypto Logo](./header.webp)
 
 ## 🌟 Key Features
 
