@@ -33,7 +33,7 @@ Explore the project and its features by visiting the GitHub repository:
 
 | Onboarding Screen                | Investment Strategies Screen |
 | -------------------------------- | ---------------------------- |
-| ![Onboarding](./firstcrypto.png) | ![Strategies](./header.png)  |
+| ![Onboarding](./firstcrypto.png) | ![Strategies](./header.webp) |
 
 ## 🤝 Contribution
 
