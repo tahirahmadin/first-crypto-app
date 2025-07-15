@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Typography, Grid, Paper, Tabs, Tab } from '@mui/material';
+import { Box, Typography, Grid, Paper, Tabs, Tab, Fade } from '@mui/material';
 import ICPWallet from '../components/icp/ICPWallet';
 import ICPTransaction from '../components/icp/ICPTransaction';
 import ICPSwap from '../components/icp/ICPSwap';
 import ICPNFT from '../components/icp/ICPNFT';
+import ICPDashboard from '../components/icp/ICPDashboard';
 
 const ICPPage: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
@@ -11,17 +12,23 @@ const ICPPage: React.FC = () => {
   const [userPrincipal, setUserPrincipal] = useState<string | null>(null);
   const [transactionHistory, setTransactionHistory] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState(0);
+  const [balance, setBalance] = useState<string>('0.00000000');
 
   const handleConnect = (userIdentity: any) => {
     setIdentity(userIdentity);
     setIsConnected(true);
     setUserPrincipal(userIdentity.getPrincipal().toText());
+    // Simulate balance loading
+    setTimeout(() => {
+      setBalance('1.23456789');
+    }, 1000);
   };
 
   const handleDisconnect = () => {
     setIdentity(null);
     setIsConnected(false);
     setUserPrincipal(null);
+    setBalance('0.00000000');
   };
 
   const handleTransactionComplete = (txHash: string) => {
@@ -43,15 +50,30 @@ const ICPPage: React.FC = () => {
       </Typography>
 
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        {/* Dashboard */}
+        {isConnected && (
+          <Grid item xs={12}>
+            <Fade in={true}>
+              <ICPDashboard 
+                isConnected={isConnected}
+                userPrincipal={userPrincipal}
+                balance={balance}
+              />
+            </Fade>
+          </Grid>
+        )}
+
+        {/* Wallet Connection */}
+        <Grid item xs={12} md={4}>
           <ICPWallet 
             onConnect={handleConnect}
             onDisconnect={handleDisconnect}
           />
         </Grid>
         
-        <Grid item xs={12}>
-          <Paper sx={{ p: 2 }}>
+        {/* Main Actions */}
+        <Grid item xs={12} md={8}>
+          <Paper sx={{ p: 2, height: 'fit-content' }}>
             <Tabs value={activeTab} onChange={handleTabChange} centered>
               <Tab label="Send ICP" />
               <Tab label="Swap Tokens" />
@@ -88,6 +110,7 @@ const ICPPage: React.FC = () => {
           </Paper>
         </Grid>
         
+        {/* Transaction History */}
         {transactionHistory.length > 0 && (
           <Grid item xs={12}>
             <Paper sx={{ p: 2 }}>
