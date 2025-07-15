@@ -13,7 +13,8 @@ import {
   Logout,
   Person,
   QrCode,
-  Savings
+  Savings,
+  AccountBalance
 } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 import { useAccountAbstraction } from 'src/store/accountAbstractionContext'
@@ -241,24 +242,47 @@ const NavMenu = ({ setStep, activeStep }) => {
               PayViaUPI
             </Typography>
           </Box>
-          <Paper
+          <Box
+            onClick={() => setStep(4)}
+            key={2}
+            className={classes.selectedPaper}
+            sx={{
+              boxShadow: 0,
+              bgcolor: activeStep === 4 ? '#EEEFF3' : 'transparent'
+            }}
+          >
+            <AccountBalance
+              style={{
+                marginRight: 10,
+                color: activeStep === 4 ? '#000000' : '#9e9e9e'
+              }}
+            />
+
+            <Typography
+              variant="title1"
+              className={activeStep === 4 ? classes.selectedMenuTitle : classes.menuTitle}
+            >
+              ICP
+            </Typography>
+          </Box>
+                      <Paper
             onClick={disconnect}
             key={0}
             className={classes.selectedPaper}
             sx={{
               boxShadow: 0,
-              bgcolor: activeStep === 4 ? 'rgba(130, 71, 229, 0.3)' : 'transparent'
+              bgcolor: activeStep === 5 ? 'rgba(130, 71, 229, 0.3)' : 'transparent'
             }}
           >
             <Logout
               style={{
                 marginRight: 10,
-                color: activeStep === 4 ? 'white' : '#bdbdbd'
+                color: activeStep === 5 ? 'white' : '#bdbdbd'
               }}
             />
             <Typography
               variant="title1"
-              className={activeStep === 4 ? classes.selectedMenuTitle : classes.menuTitle}
+              className={activeStep === 5 ? classes.selectedMenuTitle : classes.menuTitle}
             >
               Logout
             </Typography>

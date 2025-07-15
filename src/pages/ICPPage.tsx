@@ -1,0 +1,112 @@
+import React, { useState } from 'react';
+import { Box, Typography, Grid, Paper, Tabs, Tab } from '@mui/material';
+import ICPWallet from '../components/icp/ICPWallet';
+import ICPTransaction from '../components/icp/ICPTransaction';
+import ICPSwap from '../components/icp/ICPSwap';
+import ICPNFT from '../components/icp/ICPNFT';
+
+const ICPPage: React.FC = () => {
+  const [isConnected, setIsConnected] = useState(false);
+  const [identity, setIdentity] = useState<any>(null);
+  const [userPrincipal, setUserPrincipal] = useState<string | null>(null);
+  const [transactionHistory, setTransactionHistory] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState(0);
+
+  const handleConnect = (userIdentity: any) => {
+    setIdentity(userIdentity);
+    setIsConnected(true);
+    setUserPrincipal(userIdentity.getPrincipal().toText());
+  };
+
+  const handleDisconnect = () => {
+    setIdentity(null);
+    setIsConnected(false);
+    setUserPrincipal(null);
+  };
+
+  const handleTransactionComplete = (txHash: string) => {
+    setTransactionHistory(prev => [txHash, ...prev.slice(0, 9)]);
+  };
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setActiveTab(newValue);
+  };
+
+  return (
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" gutterBottom>
+        ICP Integration
+      </Typography>
+      
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+        Connect to Internet Identity and manage your ICP tokens
+      </Typography>
+
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <ICPWallet 
+            onConnect={handleConnect}
+            onDisconnect={handleDisconnect}
+          />
+        </Grid>
+        
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2 }}>
+            <Tabs value={activeTab} onChange={handleTabChange} centered>
+              <Tab label="Send ICP" />
+              <Tab label="Swap Tokens" />
+              <Tab label="Mint NFT" />
+            </Tabs>
+            
+            <Box sx={{ mt: 2 }}>
+              {activeTab === 0 && (
+                <ICPTransaction 
+                  isConnected={isConnected}
+                  onTransactionComplete={handleTransactionComplete}
+                />
+              )}
+              
+              {activeTab === 1 && (
+                <ICPSwap 
+                  isConnected={isConnected}
+                  userPrincipal={userPrincipal}
+                  onSwapComplete={handleTransactionComplete}
+                />
+              )}
+              
+              {activeTab === 2 && (
+                <ICPNFT 
+                  isConnected={isConnected}
+                  userPrincipal={userPrincipal}
+                  onNFTMinted={(nft) => {
+                    console.log('NFT minted:', nft);
+                    handleTransactionComplete(`NFT: ${nft.name}`);
+                  }}
+                />
+              )}
+            </Box>
+          </Paper>
+        </Grid>
+        
+        {transactionHistory.length > 0 && (
+          <Grid item xs={12}>
+            <Paper sx={{ p: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                Recent Activity
+              </Typography>
+              <Box sx={{ maxHeight: 200, overflow: 'auto' }}>
+                {transactionHistory.map((txHash, index) => (
+                  <Typography key={index} variant="body2" sx={{ mb: 1 }}>
+                    {txHash}
+                  </Typography>
+                ))}
+              </Box>
+            </Paper>
+          </Grid>
+        )}
+      </Grid>
+    </Box>
+  );
+};
+
+export default ICPPage; 

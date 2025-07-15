@@ -13,6 +13,7 @@ import { Grid } from '@mui/material'
 import Portfolio from './pages/PortfolioComponents/Portfolio'
 import HistoryComponent from './pages/PortfolioComponents/HistoryComponent'
 import VoteComponent from './pages/VoteComponents/VoteComponent'
+import ICPPage from './pages/ICPPage'
 // Waku imports
 import { LightNodeProvider } from '@waku/react'
 import { Protocols } from '@waku/sdk'
@@ -50,6 +51,7 @@ function App() {
                   {activeStep === 1 && <VoteComponent />}
                   {activeStep === 2 && <Portfolio />}
                   {activeStep === 3 && <ScanPayWrapper />}
+                  {activeStep === 4 && <ICPPage />}
                 </main>
               </Grid>
               <Grid item md={3} sm={12} xs={12}>
